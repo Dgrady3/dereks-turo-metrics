@@ -125,8 +125,13 @@ export async function scrapeMarketLeaders(cityKey) {
           sorts: { direction: 'ASC', type: 'RELEVANCE' },
         }),
       });
-      return res.json();
+      const text = await res.text();
+      try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
     }, city.lat, city.lng, startDate, endDate);
+
+    if (apiResult.error === 'blocked') {
+      throw new Error('Turo blocked the request from this server. Try again later.');
+    }
 
     const rawVehicles = apiResult.vehicles || [];
     const vehicles = rawVehicles
@@ -249,8 +254,13 @@ export async function scrapeTuroListings(make, model, cityKey) {
           sorts: { direction: 'ASC', type: 'RELEVANCE' },
         }),
       });
-      return res.json();
+      const text = await res.text();
+      try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
     }, make, model, city.lat, city.lng, startDate, endDate);
+
+    if (apiResult.error === 'blocked') {
+      throw new Error('Turo blocked the request from this server.');
+    }
 
     let vehicles = apiResult.vehicles || [];
     console.log(`Turo API returned ${vehicles.length} ${make} ${model} listings (${apiResult.totalHits} total hits)`);
@@ -277,10 +287,11 @@ export async function scrapeTuroListings(make, model, cityKey) {
             sorts: { direction: 'ASC', type: 'RELEVANCE' },
           }),
         });
-        return res.json();
+        const text = await res.text();
+        try { return JSON.parse(text); } catch { return { error: 'blocked' }; }
       }, city.lat, city.lng, startDate, endDate);
 
-      const allVehicles = unfilteredResult.vehicles || [];
+      const allVehicles = (unfilteredResult.error === 'blocked') ? [] : (unfilteredResult.vehicles || []);
       const makeLower = make.toLowerCase();
       const modelLower = model.toLowerCase();
 
