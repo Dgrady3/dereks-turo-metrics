@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #f0f0f0;
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle noise texture */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #00cc55; }
+
+@keyframes gear-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  /* App container */
+  .app-content {
+    padding: 32px 12px 60px !important;
+  }
+
+  /* Mode toggle - stack vertically */
+  .mode-toggle {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .mode-toggle button {
+    width: 100% !important;
+  }
+
+  /* Search panel */
+  .search-panel {
+    padding: 20px 16px !important;
+  }
+  .search-controls {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .search-controls > div {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .sort-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .sort-row > div {
+    flex: 1 1 auto !important;
+  }
+  .sort-row button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Market Leaders */
+  .market-leaders-panel {
+    padding: 20px 16px !important;
+  }
+  .market-leaders-controls {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .market-leaders-controls select {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  .market-leaders-controls button {
+    width: 100% !important;
+  }
+  .market-leaders-stats {
+    flex-direction: column !important;
+    gap: 6px !important;
+    align-items: center !important;
+  }
+  .market-leaders-tabs {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  /* Metric cards */
+  .metric-cards {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .metric-card {
+    min-width: 0 !important;
+    padding: 14px !important;
+  }
+  .metric-card-value {
+    font-size: 22px !important;
+  }
+
+  /* Verdict banner */
+  .verdict-banner {
+    padding: 20px 16px !important;
+  }
+  .verdict-text {
+    font-size: 36px !important;
+    letter-spacing: 3px !important;
+  }
+
+  /* Investment calculator */
+  .calc-toggle {
+    padding: 16px !important;
+  }
+  .calc-content {
+    padding: 0 16px 20px !important;
+  }
+  .calc-input-row {
+    flex-direction: column !important;
+  }
+  .calc-metrics {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 14px !important;
+  }
+
+  /* AI summary */
+  .ai-summary {
+    padding: 20px 16px !important;
+  }
+
+  /* Data tables */
+  .data-table-header {
+    padding: 14px 14px 8px !important;
+    font-size: 10px !important;
+  }
+  .data-table th {
+    padding: 8px 10px !important;
+    font-size: 9px !important;
+    letter-spacing: 1px !important;
+  }
+  .data-table td {
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+  }
+
+  /* Header mobile: Derek's / Titsy / TURO / Metrics stacked */
+  .app-header-title {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0 !important;
+  }
+  .header-center {
+    display: contents !important;
+  }
+  .header-dereks {
+    order: 1 !important;
+    margin-bottom: 4px !important;
+  }
+  .header-titsy {
+    order: 2 !important;
+    text-align: center !important;
+  }
+  .header-turo {
+    order: 3 !important;
+  }
+  .header-metrics {
+    order: 4 !important;
+    text-align: center !important;
+  }
+
+  /* Background gears - smaller on mobile */
+  .bg-gear-1 {
+    width: 250px !important;
+    height: 250px !important;
+    top: -80px !important;
+    right: -60px !important;
+  }
+  .bg-gear-2 {
+    width: 300px !important;
+    height: 300px !important;
+    bottom: -100px !important;
+    left: -80px !important;
+  }
+  .app-subtitle {
+    font-size: 11px !important;
+    letter-spacing: 2px !important;
+  }
+}

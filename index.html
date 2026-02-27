@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derek's Titsy Turo Metrics</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon: #00ff6a;
+    --neon-dim: #00cc55;
+    --neon-glow: rgba(0, 255, 106, 0.15);
+    --neon-glow-strong: rgba(0, 255, 106, 0.35);
+    --black: #0a0a0a;
+    --dark: #111111;
+    --dark-card: #141414;
+    --dark-border: #1e1e1e;
+    --gray: #888;
+    --light-gray: #aaa;
+    --white: #f0f0f0;
+    --red: #ff3b3b;
+    --yellow: #ffd600;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Checkered stripe across top ── */
+  .checker-stripe {
+    height: 8px;
+    background: repeating-conic-gradient(var(--neon) 0% 25%, var(--black) 0% 50%)
+      0 0 / 16px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Gear SVG background decoration ── */
+  .bg-gear {
+    position: fixed;
+    opacity: 0.025;
+    z-index: 0;
+    animation: gear-spin 60s linear infinite;
+  }
+  .bg-gear-1 { top: -200px; right: -150px; width: 600px; height: 600px; }
+  .bg-gear-2 { bottom: -300px; left: -200px; width: 800px; height: 800px; animation-direction: reverse; animation-duration: 90s; }
+
+  @keyframes gear-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ══════════════════════════════════
+     HEADER
+     ══════════════════════════════════ */
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .logo-wrapper {
+    display: inline-block;
+    position: relative;
+  }
+
+  .logo-subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+
+  .logo-main {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(32px, 6vw, 56px);
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1;
+    position: relative;
+    text-align: center;
+  }
+
+  .logo-main .highlight {
+    color: var(--neon);
+    text-shadow: 0 0 30px var(--neon-glow-strong), 0 0 60px var(--neon-glow);
+  }
+
+  .logo-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .logo-tagline::before,
+  .logo-tagline::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-dim), transparent);
+  }
+
+  /* Decorative flanking lines */
+  .header-line {
+    position: absolute;
+    top: 50%;
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-dim));
+  }
+  .header-line.left { right: calc(100% + 24px); }
+  .header-line.right { left: calc(100% + 24px); transform: scaleX(-1); }
+
+  /* Gear icon in header */
+  .header-gear {
+    display: inline-block;
+    margin: 0 6px;
+    vertical-align: middle;
+    animation: gear-spin 8s linear infinite;
+  }
+
+  /* ══════════════════════════════════
+     SEARCH PANEL
+     ══════════════════════════════════ */
+  .search-panel {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: visible;
+    z-index: 10;
+  }
+
+  .search-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon), transparent);
+  }
+
+  .search-panel-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-panel-label svg {
+    width: 14px;
+    height: 14px;
+    fill: var(--neon);
+  }
+
+  .search-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .field {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--black);
+    border: 1px solid var(--dark-border);
+    border-radius: 3px;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .field input::placeholder {
+    color: #444;
+    font-weight: 400;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--neon);
+    box-shadow: 0 0 0 2px var(--neon-glow), inset 0 0 12px var(--neon-glow);
+  }
+
+  .field select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff6a' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* Sort toggle */
+  .sort-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--dark-border);
+    border-radius: 3px;
+    overflow: hidden;
+    height: 46px;
+  }
+
+  .sort-btn {
+    padding: 0 20px;
+    background: var(--black);
+    border: none;
+    color: var(--gray);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .sort-btn.active {
+    background: var(--neon);
+    color: var(--black);
+    box-shadow: 0 0 20px var(--neon-glow);
+  }
+
+  .sort-btn:not(.active):hover {
+    color: var(--neon);
+  }
+
+  .search-btn {
+    padding: 0 32px;
+    height: 46px;
+    background: var(--neon);
+    border: none;
+    border-radius: 3px;
+    color: var(--black);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .search-btn:hover {
+    box-shadow: 0 0 30px var(--neon-glow-strong), 0 4px 20px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
+
+  .search-btn:active {
+    transform: translateY(0);
+  }
+
+  .search-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ══════════════════════════════════
+     LOADING STATE
+     ══════════════════════════════════ */
+  .loading-overlay {
+    display: none;
+    position: relative;
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 32px;
+  }
+
+  .loading-overlay.visible {
+    display: block;
+  }
+
+  .loading-spinner {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+
+  .loading-spinner .gear-outer {
+    width: 64px;
+    height: 64px;
+    animation: gear-spin 2s linear infinite;
+  }
+
+  .loading-spinner .gear-inner {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 28px;
+    height: 28px;
+    animation: gear-spin 1.4s linear infinite reverse;
+  }
+
+  .loading-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--neon);
+    text-transform: uppercase;
+    animation: pulse-text 1.5s ease-in-out infinite;
+  }
+
+  .loading-subtext {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 8px;
+  }
+
+  @keyframes pulse-text {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Progress bar */
+  .loading-bar {
+    width: 200px;
+    height: 3px;
+    background: var(--dark-border);
+    margin: 20px auto 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .loading-bar-fill {
+    height: 100%;
+    width: 30%;
+    background: var(--neon);
+    border-radius: 2px;
+    animation: loading-slide 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px var(--neon);
+  }
+
+  @keyframes loading-slide {
+    0% { transform: translateX(-100%); width: 30%; }
+    50% { width: 60%; }
+    100% { transform: translateX(400%); width: 30%; }
+  }
+
+  /* ══════════════════════════════════
+     AI SUMMARY CARD
+     ══════════════════════════════════ */
+  .results-section {
+    animation: fade-up 0.6s ease-out both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ai-summary {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-left: 3px solid var(--neon);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-summary::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 120px;
+    background: linear-gradient(90deg, var(--neon-glow), transparent);
+    pointer-events: none;
+  }
+
+  .ai-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--neon);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .ai-summary-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--neon-dim);
+    text-transform: uppercase;
+  }
+
+  .ai-summary p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--light-gray);
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-summary strong {
+    color: var(--neon);
+    font-weight: 700;
+  }
+
+  .ai-summary .stat-highlight {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* ══════════════════════════════════
+     DATA TABLES
+     ══════════════════════════════════ */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 800px) {
+    .tables-grid { grid-template-columns: 1fr; }
+    .search-row { flex-direction: column; }
+    .field { min-width: unset; }
+    .sort-toggle { width: 100%; }
+    .sort-btn { flex: 1; text-align: center; }
+    .search-btn { width: 100%; justify-content: center; }
+    .search-panel { padding: 20px 16px; }
+    .container { padding: 40px 12px 60px; }
+    .logo-main { font-size: clamp(24px, 7vw, 40px); }
+    .logo-tagline { font-size: 11px; letter-spacing: 2px; }
+    .header-line { display: none; }
+    .ai-summary { padding: 18px 16px; }
+    .ai-summary p { font-size: 14px; }
+    .data-card-header { padding: 12px 14px; }
+    thead th { padding: 8px 10px; font-size: 9px; }
+    tbody td { padding: 10px; font-size: 13px; }
+    .checker-stripe, .checker-stripe-bottom { height: 6px; }
+  }
+
+  @media (max-width: 400px) {
+    .logo-main { font-size: 22px; }
+    .logo-subtitle { font-size: 11px; letter-spacing: 5px; }
+    thead th:nth-child(4) { display: none; }
+    tbody td:nth-child(4) { display: none; }
+  }
+
+  .data-card {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    overflow: hidden;
+    animation: fade-up 0.6s ease-out both;
+  }
+
+  .data-card:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .data-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--dark-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .data-card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .data-card-title .icon {
+    color: var(--neon);
+  }
+
+  .data-card-count {
+    font-size: 11px;
+    color: var(--gray);
+    font-weight: 600;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--dark-border);
+  }
+
+  thead th:last-child {
+    text-align: right;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover {
+    background: rgba(0, 255, 106, 0.03);
+  }
+
+  tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  tbody td:last-child {
+    text-align: right;
+  }
+
+  .rank {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--neon);
+    width: 24px;
+    display: inline-block;
+  }
+
+  .rank-1 { color: var(--yellow); }
+
+  .car-name {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  .car-year {
+    color: var(--gray);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .trips-count {
+    color: var(--neon);
+    font-weight: 700;
+  }
+
+  .price {
+    color: var(--light-gray);
+  }
+
+  .revenue {
+    color: var(--neon);
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  .profit {
+    color: var(--neon);
+    font-weight: 700;
+  }
+
+  /* Trophy for #1 */
+  .trophy {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 12px;
+  }
+
+  /* ══════════════════════════════════
+     FOOTER
+     ══════════════════════════════════ */
+  footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--dark-border);
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: #444;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer-text .neon {
+    color: var(--neon-dim);
+  }
+
+  /* ══════════════════════════════════
+     CHECKER BOTTOM STRIPE
+     ══════════════════════════════════ */
+  .checker-stripe-bottom {
+    height: 8px;
+    background: repeating-conic-gradient(var(--neon) 0% 25%, var(--black) 0% 50%)
+      0 0 / 16px 16px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  /* ══════════════════════════════════
+     SCROLLBAR
+     ══════════════════════════════════ */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--dark-border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--neon-dim); }
+
+  /* ══════════════════════════════════
+     ANIMATIONS
+     ══════════════════════════════════ */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+
+  /* ══════════════════════════════════
+     SEARCHABLE DROPDOWN
+     ══════════════════════════════════ */
+  .search-select {
+    position: relative;
+  }
+
+  .search-select-input {
+    width: 100%;
+    padding: 12px 16px;
+    padding-right: 36px;
+    background: var(--black);
+    border: 1px solid var(--dark-border);
+    border-radius: 3px;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    cursor: text;
+  }
+
+  .search-select-input::placeholder {
+    color: #444;
+    font-weight: 400;
+  }
+
+  .search-select-input:focus {
+    border-color: var(--neon);
+    box-shadow: 0 0 0 2px var(--neon-glow), inset 0 0 12px var(--neon-glow);
+  }
+
+  .search-select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.2s;
+  }
+
+  .search-select.open .search-select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .search-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 3px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  }
+
+  .search-select.open .search-select-dropdown {
+    display: block;
+  }
+
+  .search-select-group {
+    padding: 6px 12px 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--neon-dim);
+    border-top: 1px solid var(--dark-border);
+  }
+
+  .search-select-group:first-child {
+    border-top: none;
+  }
+
+  .search-select-option {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--light-gray);
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .search-select-option:hover,
+  .search-select-option.highlighted {
+    background: var(--neon-glow);
+    color: var(--neon);
+  }
+
+  .search-select-option .model-badge {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gray);
+    background: rgba(255,255,255,0.05);
+    padding: 1px 6px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+
+  .search-select-no-results {
+    padding: 16px;
+    text-align: center;
+    color: var(--gray);
+    font-size: 14px;
+  }
+
+  .search-select-dropdown::-webkit-scrollbar { width: 4px; }
+  .search-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+  .search-select-dropdown::-webkit-scrollbar-thumb { background: var(--dark-border); border-radius: 2px; }
+
+  /* ══════════════════════════════════
+     METRIC CARDS
+     ══════════════════════════════════ */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 800px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 400px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+  }
+
+  .metric-card {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    animation: fade-up 0.6s ease-out both;
+  }
+
+  .metric-card:nth-child(1) { animation-delay: 0.05s; }
+  .metric-card:nth-child(2) { animation-delay: 0.1s; }
+  .metric-card:nth-child(3) { animation-delay: 0.15s; }
+  .metric-card:nth-child(4) { animation-delay: 0.2s; }
+
+  .metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--neon);
+    opacity: 0.5;
+  }
+
+  .metric-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-label svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--neon);
+    fill: none;
+  }
+
+  .metric-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--neon);
+    line-height: 1;
+    margin-bottom: 4px;
+    text-shadow: 0 0 20px var(--neon-glow);
+  }
+
+  .metric-value.small {
+    font-size: 22px;
+  }
+
+  .metric-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray);
+  }
+
+  .metric-sub .good { color: var(--neon); }
+  .metric-sub .warn { color: var(--yellow); }
+  .metric-sub .bad { color: var(--red); }
+
+  /* ── Verdict Banner ── */
+  .verdict-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 28px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    animation: fade-up 0.5s ease-out both;
+  }
+
+  .verdict-banner.buy {
+    background: linear-gradient(135deg, rgba(0, 255, 106, 0.12), rgba(0, 255, 106, 0.04));
+    border: 2px solid var(--neon);
+    box-shadow: 0 0 30px var(--neon-glow), inset 0 0 30px var(--neon-glow);
+  }
+
+  .verdict-banner.pass {
+    background: linear-gradient(135deg, rgba(255, 59, 59, 0.12), rgba(255, 59, 59, 0.04));
+    border: 2px solid var(--red);
+    box-shadow: 0 0 30px rgba(255, 59, 59, 0.15), inset 0 0 30px rgba(255, 59, 59, 0.08);
+  }
+
+  .verdict-stamp {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .verdict-banner.buy .verdict-stamp {
+    color: var(--neon);
+    text-shadow: 0 0 20px var(--neon-glow-strong);
+  }
+
+  .verdict-banner.pass .verdict-stamp {
+    color: var(--red);
+    text-shadow: 0 0 20px rgba(255, 59, 59, 0.4);
+  }
+
+  .verdict-details {
+    flex: 1;
+  }
+
+  .verdict-headline {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .verdict-reason {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--light-gray);
+  }
+
+  .verdict-reason strong {
+    color: var(--neon);
+  }
+
+  .verdict-divider {
+    width: 2px;
+    height: 48px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  .verdict-stats {
+    display: flex;
+    gap: 24px;
+    flex-shrink: 0;
+  }
+
+  .verdict-stat {
+    text-align: center;
+  }
+
+  .verdict-stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--neon);
+    text-shadow: 0 0 15px var(--neon-glow);
+  }
+
+  .verdict-stat-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 800px) {
+    .verdict-banner { flex-wrap: wrap; gap: 12px; padding: 16px 20px; }
+    .verdict-stamp { font-size: 28px; }
+    .verdict-divider { display: none; }
+    .verdict-stats { width: 100%; justify-content: space-around; }
+  }
+
+  /* Purchase price input styling */
+  .price-input-wrapper {
+    position: relative;
+  }
+
+  .price-input-wrapper::before {
+    content: '$';
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neon);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    z-index: 1;
+  }
+
+  .price-input-wrapper input {
+    padding-left: 28px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Checkered racing stripes -->
+<div class="checker-stripe"></div>
+<div class="checker-stripe-bottom"></div>
+
+<!-- Background gears -->
+<svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 15 L54 0 H46 L50 15 M50 85 L54 100 H46 L50 85 M15 50 L0 54 V46 L15 50 M85 50 L100 54 V46 L85 50 M22 22 L11 11 L18 4 L29 15 M78 22 L89 11 L82 4 L71 15 M22 78 L11 89 L18 96 L29 85 M78 78 L89 89 L82 96 L71 85" stroke="white" stroke-width="6"/>
+  <circle cx="50" cy="50" r="35" stroke="white" stroke-width="8"/>
+  <circle cx="50" cy="50" r="18" stroke="white" stroke-width="6"/>
+</svg>
+
+<svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 15 L54 0 H46 L50 15 M50 85 L54 100 H46 L50 85 M15 50 L0 54 V46 L15 50 M85 50 L100 54 V46 L85 50 M22 22 L11 11 L18 4 L29 15 M78 22 L89 11 L82 4 L71 15 M22 78 L11 89 L18 96 L29 85 M78 78 L89 89 L82 96 L71 85" stroke="white" stroke-width="6"/>
+  <circle cx="50" cy="50" r="35" stroke="white" stroke-width="8"/>
+  <circle cx="50" cy="50" r="18" stroke="white" stroke-width="6"/>
+</svg>
+
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <div class="logo-wrapper">
+      <div class="header-line left"></div>
+      <div class="header-line right"></div>
+      <div class="logo-subtitle">Derek's</div>
+      <div class="logo-main">
+        Titsy <span class="highlight">Turo</span> Metrics
+      </div>
+      <div class="logo-tagline">
+        <svg class="header-gear" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        North Carolina Market Intel
+        <svg class="header-gear" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation-direction: reverse;">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ SEARCH PANEL ═══ -->
+  <div class="search-panel">
+    <div class="search-panel-label">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      Search Turo Listings
+    </div>
+    <div class="search-row">
+      <div class="field">
+        <label>Make / Model</label>
+        <div class="search-select" id="car-select">
+          <input type="text" class="search-select-input" id="search-input" placeholder="Type to search cars..." autocomplete="off">
+          <svg class="search-select-arrow" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="#00ff6a" stroke-width="2" fill="none"/></svg>
+          <div class="search-select-dropdown" id="car-dropdown"></div>
+        </div>
+      </div>
+      <div class="field" style="flex: 0.6; min-width: 160px;">
+        <label>Location</label>
+        <select id="location-select">
+          <option value="charlotte">Charlotte, NC</option>
+          <option value="raleigh">Raleigh, NC</option>
+          <option value="durham">Durham, NC</option>
+          <option value="greensboro">Greensboro, NC</option>
+          <option value="wilmington">Wilmington, NC</option>
+          <option value="asheville">Asheville, NC</option>
+          <option value="fayetteville">Fayetteville, NC</option>
+        </select>
+      </div>
+      <div class="field" style="flex: 0.5; min-width: 140px;">
+        <label>Purchase Price</label>
+        <div class="price-input-wrapper">
+          <input type="number" id="purchase-price" placeholder="17,000" value="17000" style="padding-left: 28px;">
+        </div>
+      </div>
+      <div class="field" style="flex: 0 0 auto; min-width: auto;">
+        <label>Sort By</label>
+        <div class="sort-toggle">
+          <button class="sort-btn active" id="sort-volume" onclick="setSort('volume')">Volume</button>
+          <button class="sort-btn" id="sort-profit" onclick="setSort('profit')">Profit</button>
+        </div>
+      </div>
+      <div style="flex: 0 0 auto; align-self: flex-end;">
+        <button class="search-btn" onclick="runSearch()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Analyze
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ LOADING STATE ═══ -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner">
+      <svg class="gear-outer" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L53 0 H47 L50 10 M50 90 L53 100 H47 L50 90 M10 50 L0 53 V47 L10 50 M90 50 L100 53 V47 L90 50 M20 20 L12 12 L17 7 L25 15 M80 20 L88 12 L83 7 L75 15 M20 80 L12 88 L17 93 L25 85 M80 80 L88 88 L83 93 L75 85" stroke="#00ff6a" stroke-width="4"/>
+        <circle cx="50" cy="50" r="32" stroke="#00ff6a" stroke-width="4"/>
+        <circle cx="50" cy="50" r="16" stroke="#00ff6a" stroke-width="3"/>
+      </svg>
+      <svg class="gear-inner" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 12 L53 2 H47 L50 12 M50 88 L53 98 H47 L50 88 M12 50 L2 53 V47 L12 50 M88 50 L98 53 V47 L88 50" stroke="#00ff6a" stroke-width="5"/>
+        <circle cx="50" cy="50" r="30" stroke="#00ff6a" stroke-width="5"/>
+        <circle cx="50" cy="50" r="12" stroke="#00ff6a" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="loading-text">Scraping Turo Data</div>
+    <div class="loading-subtext">Scanning Charlotte, NC listings...</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <!-- ═══ RESULTS (shown after search) ═══ -->
+  <div class="results-section" id="results">
+
+    <!-- Verdict Banner -->
+    <div class="verdict-banner buy">
+      <div style="text-align: center; flex-shrink: 0;">
+        <div class="verdict-stamp">BUY</div>
+        <div style="font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 500; color: var(--gray); margin-top: 4px; letter-spacing: 0.5px;">This is a good investment<br>based on the data</div>
+      </div>
+      <div class="verdict-details">
+        <div class="verdict-headline">2019-2020 Toyota Camry SE is a strong investment</div>
+        <div class="verdict-reason">Moderate competition, solid trip volume, and <strong>47% annual ROI</strong> at a $17k purchase price. Breakeven in ~14 months.</div>
+      </div>
+      <div class="verdict-divider"></div>
+      <div class="verdict-stats">
+        <div class="verdict-stat">
+          <div class="verdict-stat-value">47%</div>
+          <div class="verdict-stat-label">Annual ROI</div>
+        </div>
+        <div class="verdict-stat">
+          <div class="verdict-stat-value">14mo</div>
+          <div class="verdict-stat-label">Breakeven</div>
+        </div>
+        <div class="verdict-stat">
+          <div class="verdict-stat-value">$667</div>
+          <div class="verdict-stat-label">Net/Month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Summary -->
+    <div class="ai-summary">
+      <div class="ai-summary-header">
+        <span class="ai-badge">AI</span>
+        <span class="ai-summary-label">Market Analysis</span>
+      </div>
+      <p>
+        Based on <span class="stat-highlight">47 Toyota Camry listings</span> in the Charlotte, NC market,
+        the <strong>2019-2021 Camry SE</strong> is your strongest play. Top hosts are pulling
+        <span class="stat-highlight">15-22 trips/month</span> at an average daily rate of
+        <strong>$42-48/day</strong>, netting roughly <strong>$800-1,200/mo</strong> after Turo's cut.
+        Competition is moderate with 12 similar listings nearby. The <strong>sweet spot</strong> is a
+        2019-2020 model with under 60k miles &mdash; purchase price around $16-18k gives you the best
+        ROI timeline of <span class="stat-highlight">14-18 months</span> to break even.
+      </p>
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="metrics-grid">
+      <!-- ROI -->
+      <div class="metric-card">
+        <div class="metric-label">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          ROI
+        </div>
+        <div class="metric-value">$667</div>
+        <div class="metric-sub">Est. monthly net profit</div>
+        <div class="metric-sub" style="margin-top: 4px;">Insurance: <span class="good">$133</span>/mo &middot; Fuel: <span class="good">$89</span>/mo</div>
+        <div class="metric-sub">Maintenance: <span class="warn">$62</span>/mo &middot; Depreciation: <span class="warn">$183</span>/mo</div>
+      </div>
+
+      <!-- Supply/Demand -->
+      <div class="metric-card">
+        <div class="metric-label">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+          Supply / Demand
+        </div>
+        <div class="metric-value small">2.4x</div>
+        <div class="metric-sub">Trips per listing ratio</div>
+        <div class="metric-sub" style="margin-top: 4px;">47 listings &middot; <span class="good">Moderate</span></div>
+      </div>
+
+      <!-- Avg Revenue -->
+      <div class="metric-card">
+        <div class="metric-label">
+          <svg viewBox="0 0 24 24" stroke-width="2"><rect x="1" y="3" width="22" height="18" rx="2"/><path d="M1 9h22"/></svg>
+          Avg Revenue
+        </div>
+        <div class="metric-value">$847</div>
+        <div class="metric-sub">Monthly gross / listing</div>
+        <div class="metric-sub" style="margin-top: 4px;">Top 25%: <span class="good">$1,240</span></div>
+      </div>
+
+      <!-- Competitive Density -->
+      <div class="metric-card">
+        <div class="metric-label">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Competition
+        </div>
+        <div class="metric-value small">47</div>
+        <div class="metric-sub">Similar listings nearby</div>
+        <div class="metric-sub" style="margin-top: 4px;">Avg $<span class="warn">45</span>/day &middot; $38-58 range</div>
+      </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="tables-grid">
+
+      <!-- Volume Table -->
+      <div class="data-card">
+        <div class="data-card-header">
+          <div class="data-card-title">
+            <span class="icon">&#9650;</span>
+            Top by Volume
+          </div>
+          <span class="data-card-count">47 listings</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Vehicle</th>
+              <th>Trips</th>
+              <th>$/Day</th>
+              <th>Est. Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rank rank-1">01</span></td>
+              <td><span class="car-name">Camry SE</span> <span class="car-year">2019</span></td>
+              <td class="trips-count">127</td>
+              <td class="price">$42</td>
+              <td class="revenue">$5,334</td>
+            </tr>
+            <tr>
+              <td><span class="rank">02</span></td>
+              <td><span class="car-name">Camry LE</span> <span class="car-year">2020</span></td>
+              <td class="trips-count">98</td>
+              <td class="price">$45</td>
+              <td class="revenue">$4,410</td>
+            </tr>
+            <tr>
+              <td><span class="rank">03</span></td>
+              <td><span class="car-name">Camry XSE</span> <span class="car-year">2021</span></td>
+              <td class="trips-count">84</td>
+              <td class="price">$52</td>
+              <td class="revenue">$4,368</td>
+            </tr>
+            <tr>
+              <td><span class="rank">04</span></td>
+              <td><span class="car-name">Camry SE</span> <span class="car-year">2018</span></td>
+              <td class="trips-count">76</td>
+              <td class="price">$38</td>
+              <td class="revenue">$2,888</td>
+            </tr>
+            <tr>
+              <td><span class="rank">05</span></td>
+              <td><span class="car-name">Camry LE</span> <span class="car-year">2022</span></td>
+              <td class="trips-count">61</td>
+              <td class="price">$55</td>
+              <td class="revenue">$3,355</td>
+            </tr>
+            <tr>
+              <td><span class="rank">06</span></td>
+              <td><span class="car-name">Camry TRD</span> <span class="car-year">2020</span></td>
+              <td class="trips-count">53</td>
+              <td class="price">$58</td>
+              <td class="revenue">$3,074</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Profit Table -->
+      <div class="data-card">
+        <div class="data-card-header">
+          <div class="data-card-title">
+            <span class="icon">$</span>
+            Top by Est. Profit
+          </div>
+          <span class="data-card-count">47 listings</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Vehicle</th>
+              <th>Trips</th>
+              <th>$/Day</th>
+              <th>Est. Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rank rank-1">01</span></td>
+              <td><span class="car-name">Camry XSE</span> <span class="car-year">2021</span></td>
+              <td class="trips-count">84</td>
+              <td class="price">$52</td>
+              <td class="profit">$3,180</td>
+            </tr>
+            <tr>
+              <td><span class="rank">02</span></td>
+              <td><span class="car-name">Camry SE</span> <span class="car-year">2019</span></td>
+              <td class="trips-count">127</td>
+              <td class="price">$42</td>
+              <td class="profit">$2,890</td>
+            </tr>
+            <tr>
+              <td><span class="rank">03</span></td>
+              <td><span class="car-name">Camry LE</span> <span class="car-year">2020</span></td>
+              <td class="trips-count">98</td>
+              <td class="price">$45</td>
+              <td class="profit">$2,650</td>
+            </tr>
+            <tr>
+              <td><span class="rank">04</span></td>
+              <td><span class="car-name">Camry TRD</span> <span class="car-year">2020</span></td>
+              <td class="trips-count">53</td>
+              <td class="price">$58</td>
+              <td class="profit">$2,240</td>
+            </tr>
+            <tr>
+              <td><span class="rank">05</span></td>
+              <td><span class="car-name">Camry LE</span> <span class="car-year">2022</span></td>
+              <td class="trips-count">61</td>
+              <td class="price">$55</td>
+              <td class="profit">$2,105</td>
+            </tr>
+            <tr>
+              <td><span class="rank">06</span></td>
+              <td><span class="car-name">Camry SE</span> <span class="car-year">2018</span></td>
+              <td class="trips-count">76</td>
+              <td class="price">$38</td>
+              <td class="profit">$1,520</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p class="footer-text">
+      <span class="neon">Derek's Titsy Turo Metrics</span> &mdash; Just send it!
+    </p>
+  </footer>
+
+</div>
+
+<script>
+  // ── Car database (popular Turo cars) ──
+  const CARS = {
+    'Toyota': ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Tacoma', '4Runner', 'Prius', 'Supra', 'Tundra', 'Avalon'],
+    'Honda': ['Civic', 'Accord', 'CR-V', 'HR-V', 'Pilot', 'Odyssey', 'Fit', 'Passport'],
+    'Tesla': ['Model 3', 'Model Y', 'Model S', 'Model X'],
+    'BMW': ['3 Series', '5 Series', 'X3', 'X5', 'M3', 'M4', '4 Series'],
+    'Mercedes': ['C-Class', 'E-Class', 'GLC', 'GLE', 'S-Class', 'CLA', 'A-Class'],
+    'Ford': ['Mustang', 'F-150', 'Explorer', 'Bronco', 'Escape', 'Edge', 'Maverick'],
+    'Chevrolet': ['Camaro', 'Corvette', 'Equinox', 'Tahoe', 'Silverado', 'Malibu', 'Traverse'],
+    'Nissan': ['Altima', 'Maxima', 'Rogue', 'Pathfinder', 'Sentra', 'Frontier', '370Z'],
+    'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Kona', 'Palisade', 'Ioniq 5'],
+    'Kia': ['Optima', 'Forte', 'Sportage', 'Telluride', 'Sorento', 'Soul', 'Stinger', 'EV6'],
+    'Dodge': ['Charger', 'Challenger', 'Durango'],
+    'Jeep': ['Wrangler', 'Grand Cherokee', 'Cherokee', 'Gladiator', 'Compass'],
+    'Subaru': ['Outback', 'Forester', 'Crosstrek', 'Impreza', 'WRX', 'BRZ'],
+    'Mazda': ['CX-5', 'Mazda3', 'CX-9', 'MX-5 Miata', 'CX-30', 'CX-50'],
+    'Lexus': ['IS', 'ES', 'RX', 'NX', 'GX', 'LC'],
+    'Audi': ['A4', 'A6', 'Q5', 'Q7', 'A3', 'e-tron'],
+    'Volkswagen': ['Jetta', 'Golf', 'Tiguan', 'Atlas', 'ID.4'],
+    'Porsche': ['911', 'Cayenne', 'Macan', 'Boxster', 'Panamera'],
+    'Land Rover': ['Range Rover', 'Range Rover Sport', 'Defender', 'Discovery'],
+    'Cadillac': ['Escalade', 'CT5', 'XT5', 'XT6'],
+    'GMC': ['Sierra', 'Yukon', 'Terrain', 'Acadia'],
+    'Ram': ['1500', '2500'],
+    'Infiniti': ['Q50', 'Q60', 'QX50', 'QX60', 'QX80'],
+  };
+
+  const selectEl = document.getElementById('car-select');
+  const inputEl = document.getElementById('search-input');
+  const dropdownEl = document.getElementById('car-dropdown');
+  let selectedCar = null;
+  let highlightedIdx = -1;
+
+  function buildDropdown(filter = '') {
+    const lower = filter.toLowerCase();
+    let html = '';
+    let count = 0;
+    let totalVisible = 0;
+
+    for (const [make, models] of Object.entries(CARS)) {
+      const matchingModels = models.filter(m => {
+        const full = `${make} ${m}`.toLowerCase();
+        return !filter || full.includes(lower) || make.toLowerCase().includes(lower) || m.toLowerCase().includes(lower);
+      });
+
+      if (matchingModels.length > 0) {
+        html += `<div class="search-select-group">${make}</div>`;
+        for (const model of matchingModels) {
+          html += `<div class="search-select-option" data-value="${make} ${model}" data-idx="${totalVisible}">${make} ${model}</div>`;
+          totalVisible++;
+        }
+      }
+    }
+
+    if (totalVisible === 0) {
+      html = '<div class="search-select-no-results">No matching cars found</div>';
+    }
+
+    dropdownEl.innerHTML = html;
+    highlightedIdx = -1;
+
+    // Attach click handlers
+    dropdownEl.querySelectorAll('.search-select-option').forEach(opt => {
+      opt.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        selectCar(opt.dataset.value);
+      });
+    });
+  }
+
+  function selectCar(value) {
+    selectedCar = value;
+    inputEl.value = value;
+    closeDropdown();
+  }
+
+  function openDropdown() {
+    selectEl.classList.add('open');
+    buildDropdown(inputEl.value);
+  }
+
+  function closeDropdown() {
+    selectEl.classList.remove('open');
+    highlightedIdx = -1;
+  }
+
+  inputEl.addEventListener('focus', () => {
+    openDropdown();
+    inputEl.select();
+  });
+
+  inputEl.addEventListener('input', () => {
+    selectedCar = null;
+    openDropdown();
+    buildDropdown(inputEl.value);
+  });
+
+  inputEl.addEventListener('blur', () => {
+    // If they typed something that doesn't match, clear it
+    if (!selectedCar && inputEl.value) {
+      const lower = inputEl.value.toLowerCase();
+      let found = false;
+      for (const [make, models] of Object.entries(CARS)) {
+        for (const model of models) {
+          if (`${make} ${model}`.toLowerCase() === lower) {
+            selectedCar = `${make} ${model}`;
+            inputEl.value = selectedCar;
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+      if (!found) {
+        // Find closest match or clear
+        inputEl.value = '';
+        selectedCar = null;
+      }
+    }
+    closeDropdown();
+  });
+
+  inputEl.addEventListener('keydown', (e) => {
+    const options = dropdownEl.querySelectorAll('.search-select-option');
+    if (!options.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      highlightedIdx = Math.min(highlightedIdx + 1, options.length - 1);
+      updateHighlight(options);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      highlightedIdx = Math.max(highlightedIdx - 1, 0);
+      updateHighlight(options);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (highlightedIdx >= 0 && options[highlightedIdx]) {
+        selectCar(options[highlightedIdx].dataset.value);
+      }
+      runSearch();
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+      inputEl.blur();
+    }
+  });
+
+  function updateHighlight(options) {
+    options.forEach((o, i) => {
+      o.classList.toggle('highlighted', i === highlightedIdx);
+    });
+    if (options[highlightedIdx]) {
+      options[highlightedIdx].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // ── Sort toggle ──
+  function setSort(type) {
+    document.getElementById('sort-volume').classList.toggle('active', type === 'volume');
+    document.getElementById('sort-profit').classList.toggle('active', type === 'profit');
+  }
+
+  // ── Search / Analyze ──
+  function runSearch() {
+    if (!selectedCar) {
+      inputEl.focus();
+      return;
+    }
+
+    const results = document.getElementById('results');
+    const loading = document.getElementById('loading');
+
+    results.style.display = 'none';
+    loading.classList.add('visible');
+
+    // Update loading text with selected car
+    const city = document.getElementById('location-select').selectedOptions[0].text;
+    document.querySelector('.loading-subtext').textContent = `Scanning ${city} for ${selectedCar}...`;
+
+    setTimeout(() => {
+      loading.classList.remove('visible');
+      results.style.display = 'block';
+      results.style.animation = 'none';
+      results.offsetHeight;
+      results.style.animation = '';
+    }, 3000);
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!selectEl.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+</script>
+
+</body>
+</html>
