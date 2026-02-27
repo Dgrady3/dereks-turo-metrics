@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE } from '../api';
 import { NC_CITIES } from '../data/cars';
 import LoadingState from './LoadingState';
 
@@ -23,7 +24,7 @@ export default function MarketLeaders() {
     setData(null);
 
     try {
-      const res = await fetch('/api/market-leaders', {
+      const res = await fetch(`${API_BASE}/api/market-leaders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ city }),

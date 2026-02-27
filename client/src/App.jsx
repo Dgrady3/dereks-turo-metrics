@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE } from './api';
 import SearchPanel from './components/SearchPanel';
 import LoadingState from './components/LoadingState';
 import VerdictBanner from './components/VerdictBanner';
@@ -69,7 +70,7 @@ export default function App() {
     setResults(null);
 
     try {
-      const res = await fetch('/api/search', {
+      const res = await fetch(`${API_BASE}/api/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ make, model, city }),
