@@ -108,10 +108,10 @@ app.get('/api/debug-proxy', async (req, res) => {
   try {
     const { HttpsProxyAgent } = await import('https-proxy-agent');
     const nodeFetch = (await import('node-fetch')).default;
-    const user = process.env.BRIGHT_DATA_USER;
-    const pass = process.env.BRIGHT_DATA_PASS;
-    const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
-    const port = process.env.BRIGHT_DATA_PORT || '33335';
+    const user = (process.env.BRIGHT_DATA_USER || '').trim();
+    const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
+    const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
+    const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
     const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
 
     const agent = new HttpsProxyAgent(proxyUrl);

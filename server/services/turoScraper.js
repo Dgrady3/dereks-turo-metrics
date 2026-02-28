@@ -26,10 +26,10 @@ function useDirectProxy() {
 }
 
 function getProxyAgent() {
-  const user = process.env.BRIGHT_DATA_USER;
-  const pass = process.env.BRIGHT_DATA_PASS;
-  const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
-  const port = process.env.BRIGHT_DATA_PORT || '33335';
+  const user = (process.env.BRIGHT_DATA_USER || '').trim();
+  const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
+  const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
+  const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
   return new HttpsProxyAgent(`http://${user}:${pass}@${host}:${port}`);
 }
 
