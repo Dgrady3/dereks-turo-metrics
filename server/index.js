@@ -115,9 +115,11 @@ app.get('/api/debug-proxy', async (req, res) => {
     const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
 
     const agent = new HttpsProxyAgent(proxyUrl);
-    const testRes = await nodeFetch('https://httpbin.org/ip', { agent });
-    const data = await testRes.json();
-    res.json({ proxyWorking: true, ip: data, proxyUrl: `http://${user}:***@${host}:${port}` });
+    const testRes = await nodeFetch('https://lumtest.com/myip.json', { agent });
+    const text = await testRes.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { raw: text.substring(0, 500) }; }
+    res.json({ proxyWorking: true, status: testRes.status, ip: data, proxyUrl: `http://${user}:***@${host}:${port}` });
   } catch (err) {
     res.json({ proxyWorking: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
   }
