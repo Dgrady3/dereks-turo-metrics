@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const CITY_COORDS = {
   charlotte: { lat: 35.2271, lng: -80.8431, label: 'Charlotte, NC' },
@@ -18,6 +19,66 @@ function getFutureDate(daysFromNow) {
 
 export { CITY_COORDS };
 
+// Check if we should use direct HTTP via proxy (production) vs Puppeteer (local)
+function useDirectProxy() {
+  return !!(process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS);
+}
+
+function getProxyAgent() {
+  const user = process.env.BRIGHT_DATA_USER;
+  const pass = process.env.BRIGHT_DATA_PASS;
+  const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
+  const port = process.env.BRIGHT_DATA_PORT || '33335';
+  return new HttpsProxyAgent(`http://${user}:${pass}@${host}:${port}`);
+}
+
+// Direct HTTP call to Turo API through Bright Data proxy
+async function turoSearchDirect(searchBody) {
+  const agent = getProxyAgent();
+  console.log('Making direct HTTP request to Turo API via Bright Data proxy...');
+
+  const res = await fetch('https://turo.com/api/v2/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/json',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Origin': 'https://turo.com',
+      'Referer': 'https://turo.com/us/en/search',
+    },
+    body: JSON.stringify(searchBody),
+    agent,
+  });
+
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    console.error('Turo response not JSON (first 300 chars):', text.substring(0, 300));
+    return { error: 'blocked', raw: text.substring(0, 200) };
+  }
+}
+
+function buildSearchBody(lat, lng, startDate, endDate, makes = [], models = []) {
+  return {
+    filters: {
+      age: 30,
+      dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` },
+      engines: [],
+      features: [],
+      location: { country: 'US', type: 'area', point: { lat, lng } },
+      makes,
+      models,
+      tmvTiers: [],
+      types: [],
+    },
+    flexibleType: 'NOT_FLEXIBLE',
+    searchDurationType: 'DAILY',
+    sorts: { direction: 'ASC', type: 'RELEVANCE' },
+  };
+}
+
 async function createTuroSession(cityKey) {
   const city = CITY_COORDS[cityKey];
   if (!city) throw new Error(`Unknown city: ${cityKey}`);
@@ -29,32 +90,15 @@ async function createTuroSession(cityKey) {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
     launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
   }
-  // Use Bright Data residential proxy in production to avoid Turo blocking cloud IPs
-  if (process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS) {
-    const proxyHost = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
-    const proxyPort = process.env.BRIGHT_DATA_PORT || '33335';
-    launchOptions.args.push(
-      `--proxy-server=${proxyHost}:${proxyPort}`,
-      '--ignore-certificate-errors',
-    );
-  }
   const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
-  // Authenticate with proxy if configured
-  if (process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS) {
-    await page.authenticate({
-      username: process.env.BRIGHT_DATA_USER,
-      password: process.env.BRIGHT_DATA_PASS,
-    });
-  }
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-  const usingProxy = !!(process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS);
-  console.log(`Loading Turo page for ${city.label}${usingProxy ? ' (via proxy)' : ''}...`);
+  console.log(`Loading Turo page for ${city.label}...`);
   await page.goto(`https://turo.com/us/en/search?country=US&latitude=${city.lat}&longitude=${city.lng}`, {
     waitUntil: 'networkidle2',
-    timeout: usingProxy ? 60000 : 30000,
+    timeout: 30000,
   });
   await new Promise(r => setTimeout(r, 3000));
 
@@ -118,230 +162,232 @@ function mapVehicle(v, cityLabel) {
 }
 
 export async function scrapeMarketLeaders(cityKey) {
-  const { browser, page, city } = await createTuroSession(cityKey);
+  const city = CITY_COORDS[cityKey];
+  if (!city) throw new Error(`Unknown city: ${cityKey}`);
 
-  try {
-    const startDate = getFutureDate(7);
-    const endDate = getFutureDate(10);
+  const startDate = getFutureDate(7);
+  const endDate = getFutureDate(10);
+  const searchBody = buildSearchBody(city.lat, city.lng, startDate, endDate);
 
-    console.log(`Querying Turo API for ALL vehicles in ${city.label}...`);
-    const apiResult = await page.evaluate(async (lat, lng, startDate, endDate) => {
-      const res = await fetch('/api/v2/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filters: {
-            age: 30,
-            dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` },
-            engines: [], features: [],
-            location: { country: 'US', type: 'area', point: { lat, lng } },
-            makes: [], models: [],
-            tmvTiers: [], types: [],
-          },
-          flexibleType: 'NOT_FLEXIBLE',
-          searchDurationType: 'DAILY',
-          sorts: { direction: 'ASC', type: 'RELEVANCE' },
-        }),
-      });
-      const text = await res.text();
-      try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
-    }, city.lat, city.lng, startDate, endDate);
+  let apiResult;
 
-    if (apiResult.error === 'blocked') {
-      throw new Error('Turo blocked the request from this server. Try again later.');
-    }
-
-    const rawVehicles = apiResult.vehicles || [];
-    const vehicles = rawVehicles
-      .map(v => mapVehicle(v, city.label))
-      .filter(l => l.dailyPrice > 0);
-
-    console.log(`Market scan: ${vehicles.length} vehicles in ${city.label}`);
-
-    // Group by make+model, compute averages
-    const grouped = {};
-    for (const v of vehicles) {
-      const key = `${v.make} ${v.model}`;
-      if (!grouped[key]) grouped[key] = { make: v.make, model: v.model, type: v.type, listings: [] };
-      grouped[key].listings.push(v);
-    }
-
-    const summary = Object.values(grouped).map(g => {
-      const prices = g.listings.map(l => l.dailyPrice);
-      const trips = g.listings.map(l => l.trips);
-      const ratings = g.listings.filter(l => l.rating).map(l => l.rating);
-      const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
-      const avgTrips = Math.round(trips.reduce((a, b) => a + b, 0) / trips.length);
-      const monthlyTripsArr = g.listings.map(l => l.monthlyTrips);
-      const avgMonthlyTrips = Math.round(monthlyTripsArr.reduce((a, b) => a + b, 0) / monthlyTripsArr.length * 10) / 10;
-      const avgRating = ratings.length > 0 ? Math.round(ratings.reduce((a, b) => a + b, 0) / ratings.length * 100) / 100 : null;
-
-      // Demand-weighted occupancy: use avg trips as a demand signal
-      // 0 trips = 20% occupancy (unproven), 50+ trips = 70% (proven demand)
-      const demandOccupancy = Math.min(0.70, 0.20 + (avgTrips / 50) * 0.50);
-      const estimatedMonthly = Math.round(avgPrice * 30 * demandOccupancy * 0.75 - 425);
-
-      // Profit score combines price AND demand (not just price alone)
-      // High price + low trips = low score, moderate price + high trips = high score
-      const profitScore = estimatedMonthly * (0.4 + 0.6 * Math.min(avgTrips / 50, 1));
-
-      // Aggregate demand signal: use the best signal from listings, pick reason from top listing
-      const demandCounts = { hot: 0, warm: 0, cold: 0 };
-      g.listings.forEach(l => demandCounts[l.demandSignal]++);
-      const groupDemand = demandCounts.hot > 0 ? 'hot' : demandCounts.warm > 0 ? 'warm' : 'cold';
-      const topByTrips = [...g.listings].sort((a, b) => b.trips - a.trips)[0];
-      // Build group-level reason
-      let groupDemandReason;
-      if (g.listings.length === 1) {
-        groupDemandReason = topByTrips.demandReason;
-      } else {
-        const totalTrips = trips.reduce((a, b) => a + b, 0);
-        const newCount = g.listings.filter(l => l.isNewListing).length;
-        groupDemandReason = `${avgTrips} avg trips across ${g.listings.length} listings (${totalTrips} total)`;
-        if (newCount > 0) groupDemandReason += ` · ${newCount} new listing${newCount > 1 ? 's' : ''}`;
-      }
-
-      return {
-        make: g.make,
-        model: g.model,
-        type: g.type,
-        count: g.listings.length,
-        avgDailyPrice: avgPrice,
-        avgTrips,
-        avgMonthlyTrips,
-        avgRating,
-        occupancyEstimate: Math.round(demandOccupancy * 100),
-        estimatedMonthly: Math.max(0, estimatedMonthly),
-        profitScore: Math.max(0, Math.round(profitScore)),
-        demandSignal: groupDemand,
-        demandReason: groupDemandReason,
-        topListing: topByTrips,
-      };
-    });
-
-    // Categorize — Top Profit sorts by profitScore (price × demand), not just raw estimated monthly
-    const categories = {
-      bestProfit: [...summary].sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
-      bestVolume: [...summary].sort((a, b) => b.avgTrips - a.avgTrips).slice(0, 10),
-      bestBudget: [...summary].filter(s => s.avgDailyPrice <= 60).sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
-      bestPremium: [...summary].filter(s => s.avgDailyPrice >= 100).sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
-      leastCompetition: [...summary].sort((a, b) => a.count - b.count).slice(0, 10),
-    };
-
-    return {
-      city: city.label,
-      totalVehicles: vehicles.length,
-      totalModels: summary.length,
-      categories,
-      scrapedAt: new Date().toISOString(),
-    };
-  } finally {
-    await browser.close();
-  }
-}
-
-export async function scrapeTuroListings(make, model, cityKey) {
-  const { browser, page, city } = await createTuroSession(cityKey);
-
-  try {
-    const searchQuery = `${make} ${model}`.trim();
-    const startDate = getFutureDate(7);
-    const endDate = getFutureDate(10);
-
-    console.log(`Querying Turo API for ${make} ${model} in ${city.label}...`);
-
-    // First try with make/model filters
-    const apiResult = await page.evaluate(async (make, model, lat, lng, startDate, endDate) => {
-      const res = await fetch('/api/v2/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filters: {
-            age: 30,
-            dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` },
-            engines: [],
-            features: [],
-            location: { country: 'US', type: 'area', point: { lat, lng } },
-            makes: [make],
-            models: [model],
-            tmvTiers: [],
-            types: [],
-          },
-          flexibleType: 'NOT_FLEXIBLE',
-          searchDurationType: 'DAILY',
-          sorts: { direction: 'ASC', type: 'RELEVANCE' },
-        }),
-      });
-      const text = await res.text();
-      try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
-    }, make, model, city.lat, city.lng, startDate, endDate);
-
-    if (apiResult.error === 'blocked') {
-      throw new Error('Turo blocked the request from this server.');
-    }
-
-    let vehicles = apiResult.vehicles || [];
-    console.log(`Turo API returned ${vehicles.length} ${make} ${model} listings (${apiResult.totalHits} total hits)`);
-
-    // If filtered search returns few results, fall back to unfiltered search
-    // and match by make/model ourselves (Turo's filter names may not match)
-    if (vehicles.length < 3) {
-      console.log(`Few results with filters — falling back to unfiltered search and manual matching...`);
-      const unfilteredResult = await page.evaluate(async (lat, lng, startDate, endDate) => {
+  if (useDirectProxy()) {
+    // Production: direct HTTP through Bright Data proxy
+    console.log(`Querying Turo API for ALL vehicles in ${city.label} (via proxy)...`);
+    apiResult = await turoSearchDirect(searchBody);
+  } else {
+    // Local: use Puppeteer
+    const { browser, page } = await createTuroSession(cityKey);
+    try {
+      console.log(`Querying Turo API for ALL vehicles in ${city.label}...`);
+      apiResult = await page.evaluate(async (body) => {
         const res = await fetch('/api/v2/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            filters: {
-              age: 30,
-              dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` },
-              engines: [], features: [],
-              location: { country: 'US', type: 'area', point: { lat, lng } },
-              makes: [], models: [],
-              tmvTiers: [], types: [],
-            },
-            flexibleType: 'NOT_FLEXIBLE',
-            searchDurationType: 'DAILY',
-            sorts: { direction: 'ASC', type: 'RELEVANCE' },
-          }),
+          body: JSON.stringify(body),
         });
         const text = await res.text();
-        try { return JSON.parse(text); } catch { return { error: 'blocked' }; }
-      }, city.lat, city.lng, startDate, endDate);
+        try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
+      }, searchBody);
+    } finally {
+      await browser.close();
+    }
+  }
 
-      const allVehicles = (unfilteredResult.error === 'blocked') ? [] : (unfilteredResult.vehicles || []);
-      const makeLower = make.toLowerCase();
-      const modelLower = model.toLowerCase();
+  if (apiResult.error === 'blocked') {
+    throw new Error('Turo blocked the request from this server. Try again later.');
+  }
 
-      // Find exact matches from the full list
-      const exactMatches = allVehicles.filter(v =>
-        (v.make || '').toLowerCase() === makeLower &&
-        (v.model || '').toLowerCase() === modelLower
-      );
+  const rawVehicles = apiResult.vehicles || [];
+  const vehicles = rawVehicles
+    .map(v => mapVehicle(v, city.label))
+    .filter(l => l.dailyPrice > 0);
 
-      // Also find similar make matches for context
-      const sameMarkMatches = allVehicles.filter(v =>
-        (v.make || '').toLowerCase() === makeLower &&
-        (v.model || '').toLowerCase() !== modelLower
-      );
+  console.log(`Market scan: ${vehicles.length} vehicles in ${city.label}`);
 
-      if (exactMatches.length > 0 || sameMarkMatches.length > 0) {
-        vehicles = [...exactMatches, ...sameMarkMatches];
-        console.log(`Fallback found ${exactMatches.length} exact + ${sameMarkMatches.length} same-make matches`);
-      }
+  // Group by make+model, compute averages
+  const grouped = {};
+  for (const v of vehicles) {
+    const key = `${v.make} ${v.model}`;
+    if (!grouped[key]) grouped[key] = { make: v.make, model: v.model, type: v.type, listings: [] };
+    grouped[key].listings.push(v);
+  }
+
+  const summary = Object.values(grouped).map(g => {
+    const prices = g.listings.map(l => l.dailyPrice);
+    const trips = g.listings.map(l => l.trips);
+    const ratings = g.listings.filter(l => l.rating).map(l => l.rating);
+    const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+    const avgTrips = Math.round(trips.reduce((a, b) => a + b, 0) / trips.length);
+    const monthlyTripsArr = g.listings.map(l => l.monthlyTrips);
+    const avgMonthlyTrips = Math.round(monthlyTripsArr.reduce((a, b) => a + b, 0) / monthlyTripsArr.length * 10) / 10;
+    const avgRating = ratings.length > 0 ? Math.round(ratings.reduce((a, b) => a + b, 0) / ratings.length * 100) / 100 : null;
+
+    // Demand-weighted occupancy: use avg trips as a demand signal
+    // 0 trips = 20% occupancy (unproven), 50+ trips = 70% (proven demand)
+    const demandOccupancy = Math.min(0.70, 0.20 + (avgTrips / 50) * 0.50);
+    const estimatedMonthly = Math.round(avgPrice * 30 * demandOccupancy * 0.75 - 425);
+
+    // Profit score combines price AND demand (not just price alone)
+    // High price + low trips = low score, moderate price + high trips = high score
+    const profitScore = estimatedMonthly * (0.4 + 0.6 * Math.min(avgTrips / 50, 1));
+
+    // Aggregate demand signal: use the best signal from listings, pick reason from top listing
+    const demandCounts = { hot: 0, warm: 0, cold: 0 };
+    g.listings.forEach(l => demandCounts[l.demandSignal]++);
+    const groupDemand = demandCounts.hot > 0 ? 'hot' : demandCounts.warm > 0 ? 'warm' : 'cold';
+    const topByTrips = [...g.listings].sort((a, b) => b.trips - a.trips)[0];
+    // Build group-level reason
+    let groupDemandReason;
+    if (g.listings.length === 1) {
+      groupDemandReason = topByTrips.demandReason;
+    } else {
+      const totalTrips = trips.reduce((a, b) => a + b, 0);
+      const newCount = g.listings.filter(l => l.isNewListing).length;
+      groupDemandReason = `${avgTrips} avg trips across ${g.listings.length} listings (${totalTrips} total)`;
+      if (newCount > 0) groupDemandReason += ` · ${newCount} new listing${newCount > 1 ? 's' : ''}`;
     }
 
-    const listings = vehicles.map(v => mapVehicle(v, city.label)).filter(l => l.dailyPrice > 0);
-
     return {
-      listings,
-      city: city.label,
-      searchQuery,
-      scrapedAt: new Date().toISOString(),
-      source: 'turo_api',
-      totalHits: apiResult.totalHits || 0,
+      make: g.make,
+      model: g.model,
+      type: g.type,
+      count: g.listings.length,
+      avgDailyPrice: avgPrice,
+      avgTrips,
+      avgMonthlyTrips,
+      avgRating,
+      occupancyEstimate: Math.round(demandOccupancy * 100),
+      estimatedMonthly: Math.max(0, estimatedMonthly),
+      profitScore: Math.max(0, Math.round(profitScore)),
+      demandSignal: groupDemand,
+      demandReason: groupDemandReason,
+      topListing: topByTrips,
     };
-  } finally {
-    await browser.close();
+  });
+
+  // Categorize — Top Profit sorts by profitScore (price × demand), not just raw estimated monthly
+  const categories = {
+    bestProfit: [...summary].sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
+    bestVolume: [...summary].sort((a, b) => b.avgTrips - a.avgTrips).slice(0, 10),
+    bestBudget: [...summary].filter(s => s.avgDailyPrice <= 60).sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
+    bestPremium: [...summary].filter(s => s.avgDailyPrice >= 100).sort((a, b) => b.profitScore - a.profitScore).slice(0, 10),
+    leastCompetition: [...summary].sort((a, b) => a.count - b.count).slice(0, 10),
+  };
+
+  return {
+    city: city.label,
+    totalVehicles: vehicles.length,
+    totalModels: summary.length,
+    categories,
+    scrapedAt: new Date().toISOString(),
+  };
+}
+
+export async function scrapeTuroListings(make, model, cityKey) {
+  const city = CITY_COORDS[cityKey];
+  if (!city) throw new Error(`Unknown city: ${cityKey}`);
+
+  const searchQuery = `${make} ${model}`.trim();
+  const startDate = getFutureDate(7);
+  const endDate = getFutureDate(10);
+
+  let apiResult;
+
+  if (useDirectProxy()) {
+    // Production: direct HTTP through Bright Data proxy
+    console.log(`Querying Turo API for ${make} ${model} in ${city.label} (via proxy)...`);
+    const searchBody = buildSearchBody(city.lat, city.lng, startDate, endDate, [make], [model]);
+    apiResult = await turoSearchDirect(searchBody);
+  } else {
+    // Local: use Puppeteer
+    const { browser, page } = await createTuroSession(cityKey);
+    try {
+      console.log(`Querying Turo API for ${make} ${model} in ${city.label}...`);
+      const searchBody = buildSearchBody(city.lat, city.lng, startDate, endDate, [make], [model]);
+      apiResult = await page.evaluate(async (body) => {
+        const res = await fetch('/api/v2/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const text = await res.text();
+        try { return JSON.parse(text); } catch { return { error: 'blocked', raw: text.substring(0, 200) }; }
+      }, searchBody);
+
+      // Fallback: if filtered search returns few results, try unfiltered
+      if ((apiResult.vehicles || []).length < 3 && apiResult.error !== 'blocked') {
+        console.log(`Few results with filters — falling back to unfiltered search and manual matching...`);
+        const unfilteredBody = buildSearchBody(city.lat, city.lng, startDate, endDate);
+        const unfilteredResult = await page.evaluate(async (body) => {
+          const res = await fetch('/api/v2/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          const text = await res.text();
+          try { return JSON.parse(text); } catch { return { error: 'blocked' }; }
+        }, unfilteredBody);
+
+        const allVehicles = (unfilteredResult.error === 'blocked') ? [] : (unfilteredResult.vehicles || []);
+        const makeLower = make.toLowerCase();
+        const modelLower = model.toLowerCase();
+        const exactMatches = allVehicles.filter(v =>
+          (v.make || '').toLowerCase() === makeLower &&
+          (v.model || '').toLowerCase() === modelLower
+        );
+        const sameMarkMatches = allVehicles.filter(v =>
+          (v.make || '').toLowerCase() === makeLower &&
+          (v.model || '').toLowerCase() !== modelLower
+        );
+        if (exactMatches.length > 0 || sameMarkMatches.length > 0) {
+          apiResult = { ...apiResult, vehicles: [...exactMatches, ...sameMarkMatches] };
+          console.log(`Fallback found ${exactMatches.length} exact + ${sameMarkMatches.length} same-make matches`);
+        }
+      }
+    } finally {
+      await browser.close();
+    }
   }
+
+  if (apiResult.error === 'blocked') {
+    throw new Error('Turo blocked the request from this server.');
+  }
+
+  let vehicles = apiResult.vehicles || [];
+  console.log(`Turo API returned ${vehicles.length} listings (${apiResult.totalHits || 0} total hits)`);
+
+  // For direct proxy path, also do the fallback if few results
+  if (useDirectProxy() && vehicles.length < 3) {
+    console.log(`Few results with filters — falling back to unfiltered search via proxy...`);
+    const unfilteredBody = buildSearchBody(city.lat, city.lng, startDate, endDate);
+    const unfilteredResult = await turoSearchDirect(unfilteredBody);
+
+    const allVehicles = (unfilteredResult.error === 'blocked') ? [] : (unfilteredResult.vehicles || []);
+    const makeLower = make.toLowerCase();
+    const modelLower = model.toLowerCase();
+    const exactMatches = allVehicles.filter(v =>
+      (v.make || '').toLowerCase() === makeLower &&
+      (v.model || '').toLowerCase() === modelLower
+    );
+    const sameMarkMatches = allVehicles.filter(v =>
+      (v.make || '').toLowerCase() === makeLower &&
+      (v.model || '').toLowerCase() !== modelLower
+    );
+    if (exactMatches.length > 0 || sameMarkMatches.length > 0) {
+      vehicles = [...exactMatches, ...sameMarkMatches];
+      console.log(`Fallback found ${exactMatches.length} exact + ${sameMarkMatches.length} same-make matches`);
+    }
+  }
+
+  const listings = vehicles.map(v => mapVehicle(v, city.label)).filter(l => l.dailyPrice > 0);
+
+  return {
+    listings,
+    city: city.label,
+    searchQuery,
+    scrapedAt: new Date().toISOString(),
+    source: 'turo_api',
+    totalHits: apiResult.totalHits || 0,
+  };
 }
