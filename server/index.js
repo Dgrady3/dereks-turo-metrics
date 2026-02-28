@@ -106,15 +106,16 @@ app.post('/api/search', async (req, res) => {
 // Temporary debug endpoint to test proxy
 app.get('/api/debug-proxy', async (req, res) => {
   try {
-    const { ProxyAgent } = await import('undici');
+    const { HttpsProxyAgent } = await import('https-proxy-agent');
+    const nodeFetch = (await import('node-fetch')).default;
     const user = process.env.BRIGHT_DATA_USER;
     const pass = process.env.BRIGHT_DATA_PASS;
     const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
     const port = process.env.BRIGHT_DATA_PORT || '33335';
     const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
 
-    const dispatcher = new ProxyAgent(proxyUrl);
-    const testRes = await fetch('https://httpbin.org/ip', { dispatcher });
+    const agent = new HttpsProxyAgent(proxyUrl);
+    const testRes = await nodeFetch('https://httpbin.org/ip', { agent });
     const data = await testRes.json();
     res.json({ proxyWorking: true, ip: data, proxyUrl: `http://${user}:***@${host}:${port}` });
   } catch (err) {
