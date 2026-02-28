@@ -33,7 +33,10 @@ async function createTuroSession(cityKey) {
   if (process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS) {
     const proxyHost = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
     const proxyPort = process.env.BRIGHT_DATA_PORT || '33335';
-    launchOptions.args.push(`--proxy-server=http://${proxyHost}:${proxyPort}`);
+    launchOptions.args.push(
+      `--proxy-server=${proxyHost}:${proxyPort}`,
+      '--ignore-certificate-errors',
+    );
   }
   const browser = await puppeteer.launch(launchOptions);
 
@@ -47,11 +50,13 @@ async function createTuroSession(cityKey) {
   }
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
+  const usingProxy = !!(process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS);
+  console.log(`Loading Turo page for ${city.label}${usingProxy ? ' (via proxy)' : ''}...`);
   await page.goto(`https://turo.com/us/en/search?country=US&latitude=${city.lat}&longitude=${city.lng}`, {
     waitUntil: 'networkidle2',
-    timeout: 30000,
+    timeout: usingProxy ? 60000 : 30000,
   });
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 3000));
 
   return { browser, page, city };
 }
