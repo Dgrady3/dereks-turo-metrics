@@ -106,21 +106,26 @@ app.post('/api/search', async (req, res) => {
 // Temporary debug endpoint to test proxy
 app.get('/api/debug-proxy', async (req, res) => {
   try {
+    const https = await import('node:https');
     const { HttpsProxyAgent } = await import('https-proxy-agent');
-    const nodeFetch = (await import('node-fetch')).default;
     const user = (process.env.BRIGHT_DATA_USER || '').trim();
     const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
     const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
     const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
     const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
-
-    const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
     const agent = new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
-    const testRes = await nodeFetch('https://lumtest.com/myip.json', { agent });
-    const text = await testRes.text();
-    let data;
-    try { data = JSON.parse(text); } catch { data = { raw: text.substring(0, 500) }; }
-    res.json({ proxyWorking: true, status: testRes.status, ip: data, proxyUrl: `http://${user}:***@${host}:${port}` });
+
+    const data = await new Promise((resolve, reject) => {
+      const req = https.request({ hostname: 'lumtest.com', port: 443, path: '/myip.json', method: 'GET', agent }, (r) => {
+        let body = '';
+        r.on('data', chunk => body += chunk);
+        r.on('end', () => resolve({ status: r.statusCode, body: body.substring(0, 500) }));
+      });
+      req.on('error', reject);
+      req.end();
+    });
+
+    res.json({ proxyWorking: true, ...data, proxyUrl: `http://${user}:***@${host}:${port}` });
   } catch (err) {
     res.json({ proxyWorking: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
   }
