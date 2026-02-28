@@ -30,12 +30,8 @@ function getProxyAgent() {
   const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
   const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
   const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
-  return new HttpsProxyAgent({
-    host,
-    port,
-    auth: `${user}:${pass}`,
-    rejectUnauthorized: false,
-  });
+  const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
+  return new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
 }
 
 // Direct HTTP call to Turo API through Bright Data proxy

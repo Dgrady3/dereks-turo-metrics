@@ -114,12 +114,8 @@ app.get('/api/debug-proxy', async (req, res) => {
     const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
     const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
 
-    const agent = new HttpsProxyAgent({
-      host,
-      port,
-      auth: `${user}:${pass}`,
-      rejectUnauthorized: false,
-    });
+    const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
+    const agent = new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
     const testRes = await nodeFetch('https://lumtest.com/myip.json', { agent });
     const text = await testRes.text();
     let data;
