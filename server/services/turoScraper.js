@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import { ProxyAgent } from 'undici';
 
 const CITY_COORDS = {
   charlotte: { lat: 35.2271, lng: -80.8431, label: 'Charlotte, NC' },
@@ -24,17 +24,17 @@ function useDirectProxy() {
   return !!(process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS);
 }
 
-function getProxyAgent() {
+function getProxyDispatcher() {
   const user = process.env.BRIGHT_DATA_USER;
   const pass = process.env.BRIGHT_DATA_PASS;
   const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
   const port = process.env.BRIGHT_DATA_PORT || '33335';
-  return new HttpsProxyAgent(`http://${user}:${pass}@${host}:${port}`);
+  return new ProxyAgent(`http://${user}:${pass}@${host}:${port}`);
 }
 
 // Direct HTTP call to Turo API through Bright Data proxy
 async function turoSearchDirect(searchBody) {
-  const agent = getProxyAgent();
+  const dispatcher = getProxyDispatcher();
   console.log('Making direct HTTP request to Turo API via Bright Data proxy...');
 
   const res = await fetch('https://turo.com/api/v2/search', {
@@ -48,7 +48,7 @@ async function turoSearchDirect(searchBody) {
       'Referer': 'https://turo.com/us/en/search',
     },
     body: JSON.stringify(searchBody),
-    agent,
+    dispatcher,
   });
 
   const text = await res.text();
