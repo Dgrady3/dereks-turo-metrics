@@ -131,6 +131,46 @@ app.get('/api/debug-proxy', async (req, res) => {
   }
 });
 
+// Debug: test Turo API directly
+app.get('/api/debug-turo', async (req, res) => {
+  try {
+    const { CITY_COORDS } = await import('./services/turoScraper.js');
+    const https = await import('node:https');
+    const { HttpsProxyAgent } = await import('https-proxy-agent');
+    const user = (process.env.BRIGHT_DATA_USER || '').trim();
+    const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
+    const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
+    const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
+    const agent = new HttpsProxyAgent(`http://${user}:${pass}@${host}:${port}`, { rejectUnauthorized: false });
+
+    const city = CITY_COORDS.charlotte;
+    const d = new Date(); d.setDate(d.getDate() + 7);
+    const startDate = d.toISOString().split('T')[0];
+    d.setDate(d.getDate() + 3);
+    const endDate = d.toISOString().split('T')[0];
+
+    const bodyStr = JSON.stringify({
+      filters: { age: 30, dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` }, engines: [], features: [], location: { country: 'US', type: 'area', point: { lat: city.lat, lng: city.lng } }, makes: [], models: [], tmvTiers: [], types: [] },
+      flexibleType: 'NOT_FLEXIBLE', searchDurationType: 'DAILY', sorts: { direction: 'ASC', type: 'RELEVANCE' },
+    });
+
+    const data = await new Promise((resolve, reject) => {
+      const r = https.request({ hostname: 'turo.com', port: 443, path: '/api/v2/search', method: 'POST', agent, rejectUnauthorized: false, headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(bodyStr), 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36', 'Accept': 'application/json' } }, (resp) => {
+        let body = '';
+        resp.on('data', chunk => body += chunk);
+        resp.on('end', () => resolve({ status: resp.statusCode, headers: resp.headers, body: body.substring(0, 1000) }));
+      });
+      r.on('error', reject);
+      r.write(bodyStr);
+      r.end();
+    });
+
+    res.json({ turoTest: true, ...data });
+  } catch (err) {
+    res.json({ turoTest: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
+  }
+});
+
 app.post('/api/market-leaders', async (req, res) => {
   try {
     const { city } = req.body;
