@@ -103,6 +103,25 @@ app.post('/api/search', async (req, res) => {
   }
 });
 
+// Temporary debug endpoint to test proxy
+app.get('/api/debug-proxy', async (req, res) => {
+  try {
+    const { ProxyAgent } = await import('undici');
+    const user = process.env.BRIGHT_DATA_USER;
+    const pass = process.env.BRIGHT_DATA_PASS;
+    const host = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
+    const port = process.env.BRIGHT_DATA_PORT || '33335';
+    const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
+
+    const dispatcher = new ProxyAgent(proxyUrl);
+    const testRes = await fetch('https://httpbin.org/ip', { dispatcher });
+    const data = await testRes.json();
+    res.json({ proxyWorking: true, ip: data, proxyUrl: `http://${user}:***@${host}:${port}` });
+  } catch (err) {
+    res.json({ proxyWorking: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
+  }
+});
+
 app.post('/api/market-leaders', async (req, res) => {
   try {
     const { city } = req.body;
