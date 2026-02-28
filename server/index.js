@@ -116,7 +116,7 @@ app.get('/api/debug-proxy', async (req, res) => {
     const agent = new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
 
     const data = await new Promise((resolve, reject) => {
-      const req = https.request({ hostname: 'lumtest.com', port: 443, path: '/myip.json', method: 'GET', agent }, (r) => {
+      const req = https.request({ hostname: 'lumtest.com', port: 443, path: '/myip.json', method: 'GET', agent, rejectUnauthorized: false }, (r) => {
         let body = '';
         r.on('data', chunk => body += chunk);
         r.on('end', () => resolve({ status: r.statusCode, body: body.substring(0, 500) }));

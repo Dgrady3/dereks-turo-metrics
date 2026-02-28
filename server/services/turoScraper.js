@@ -47,6 +47,7 @@ function turoSearchDirect(searchBody) {
       path: '/api/v2/search',
       method: 'POST',
       agent,
+      rejectUnauthorized: false,
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(bodyStr),
