@@ -29,9 +29,22 @@ async function createTuroSession(cityKey) {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) {
     launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
   }
+  // Use Bright Data residential proxy in production to avoid Turo blocking cloud IPs
+  if (process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS) {
+    const proxyHost = process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io';
+    const proxyPort = process.env.BRIGHT_DATA_PORT || '33335';
+    launchOptions.args.push(`--proxy-server=http://${proxyHost}:${proxyPort}`);
+  }
   const browser = await puppeteer.launch(launchOptions);
 
   const page = await browser.newPage();
+  // Authenticate with proxy if configured
+  if (process.env.BRIGHT_DATA_USER && process.env.BRIGHT_DATA_PASS) {
+    await page.authenticate({
+      username: process.env.BRIGHT_DATA_USER,
+      password: process.env.BRIGHT_DATA_PASS,
+    });
+  }
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
   await page.goto(`https://turo.com/us/en/search?country=US&latitude=${city.lat}&longitude=${city.lng}`, {
