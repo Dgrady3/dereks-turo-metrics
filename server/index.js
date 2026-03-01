@@ -1,47 +1,108 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import 'dotenv/config';
-import { scrapeTuroListings, scrapeMarketLeaders } from './services/turoScraper.js';
+import { CITY_COORDS, categorizeMarketData } from './services/turoScraper.js';
 import { analyzeListings } from './services/analysisEngine.js';
 import { generateSummary } from './services/aiSummary.js';
 import { getMockListings } from './services/mockData.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = path.join(__dirname, 'data');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-}));
-app.use(express.json());
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+app.use(express.json({ limit: '10mb' }));
+
+// Read cached data for a city
+function getCachedData(cityKey) {
+  const filePath = path.join(DATA_DIR, `${cityKey}.json`);
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch {
+    return null;
+  }
+}
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const cities = Object.keys(CITY_COORDS);
+  const cached = cities.filter(c => fs.existsSync(path.join(DATA_DIR, `${c}.json`)));
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), cachedCities: cached.length, totalCities: cities.length });
+});
+
+// Ingest endpoint — receives scraped data from local cron job
+app.post('/api/ingest', (req, res) => {
+  const key = (req.query.key || '').trim();
+  if (!process.env.INGEST_API_KEY || key !== process.env.INGEST_API_KEY.trim()) {
+    return res.status(401).json({ error: 'Invalid API key' });
+  }
+
+  const { city, cityLabel, vehicles, scrapedAt } = req.body;
+  if (!city || !vehicles || !Array.isArray(vehicles)) {
+    return res.status(400).json({ error: 'city and vehicles[] are required' });
+  }
+
+  const filePath = path.join(DATA_DIR, `${city}.json`);
+  const data = { city, cityLabel, vehicles, scrapedAt: scrapedAt || new Date().toISOString() };
+
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data));
+    console.log(`Ingested ${vehicles.length} vehicles for ${cityLabel || city}`);
+    res.json({ success: true, city: cityLabel || city, vehicleCount: vehicles.length });
+  } catch (err) {
+    console.error('Ingest write error:', err);
+    res.status(500).json({ error: 'Failed to save data' });
+  }
 });
 
 app.post('/api/search', async (req, res) => {
   try {
     const { make, model, city, purchasePrice } = req.body;
-
     if (!make || !model || !city) {
       return res.status(400).json({ error: 'make, model, and city are required' });
     }
 
-    // 1. Try scraping Turo, fall back to sample data
-    let scrapeResult;
+    const cityLabel = CITY_COORDS[city]?.label || city;
+    let listings = [];
     let dataSource = 'live';
-    try {
-      scrapeResult = await scrapeTuroListings(make, model, city);
-    } catch (scrapeErr) {
-      console.error('Scrape failed:', scrapeErr.message);
-      scrapeResult = { listings: [], city: '', searchQuery: `${make} ${model}` };
+    let lastUpdated = null;
+
+    // Try cached data first
+    const cached = getCachedData(city);
+    if (cached && cached.vehicles && cached.vehicles.length > 0) {
+      const searchMakeLower = make.toLowerCase();
+      const searchModelLower = model.toLowerCase();
+
+      // Exact matches
+      const exactMatches = cached.vehicles.filter(v =>
+        (v.make || '').toLowerCase() === searchMakeLower &&
+        (v.model || '').toLowerCase() === searchModelLower
+      );
+
+      // Same-make matches for context
+      const sameMakeMatches = cached.vehicles.filter(v =>
+        (v.make || '').toLowerCase() === searchMakeLower &&
+        (v.model || '').toLowerCase() !== searchModelLower
+      );
+
+      listings = [...exactMatches, ...sameMakeMatches];
+      lastUpdated = cached.scrapedAt;
+      dataSource = 'live';
     }
 
-    if (scrapeResult.listings.length === 0) {
-      // Try mock data as fallback
-      const cityLabel = { charlotte: 'Charlotte, NC', raleigh: 'Raleigh, NC', durham: 'Durham, NC', greensboro: 'Greensboro, NC', wilmington: 'Wilmington, NC', asheville: 'Asheville, NC', fayetteville: 'Fayetteville, NC' }[city] || city;
+    // Fall back to mock data
+    if (listings.length === 0) {
       const mockResult = getMockListings(make, model, cityLabel);
       if (mockResult) {
-        scrapeResult = mockResult;
+        listings = mockResult.listings;
         dataSource = 'sample';
       } else {
         return res.json({
@@ -53,25 +114,21 @@ app.post('/api/search', async (req, res) => {
       }
     }
 
-    // Count exact vs similar matches
     const searchMakeLower = make.toLowerCase();
     const searchModelLower = model.toLowerCase();
-    const exactMatches = scrapeResult.listings.filter(l => {
-      const lMake = (l.make || '').toLowerCase();
-      const lModel = (l.model || '').toLowerCase();
-      return lMake === searchMakeLower && lModel === searchModelLower;
-    }).length;
-    const similarMatches = scrapeResult.listings.length - exactMatches;
+    const exactMatches = listings.filter(l =>
+      (l.make || '').toLowerCase() === searchMakeLower &&
+      (l.model || '').toLowerCase() === searchModelLower
+    ).length;
+    const similarMatches = listings.length - exactMatches;
 
-    // 2. Run analysis engine
-    const analysis = analyzeListings(scrapeResult.listings, purchasePrice || null);
+    const analysis = analyzeListings(listings, purchasePrice || null);
 
-    // 3. Generate AI summary
     let aiSummary = '';
     try {
       aiSummary = await generateSummary(
-        scrapeResult.searchQuery,
-        scrapeResult.city,
+        `${make} ${model}`,
+        cityLabel,
         analysis.metrics,
         analysis.rankedByVolume,
         analysis.rankedByProfit
@@ -81,14 +138,14 @@ app.post('/api/search', async (req, res) => {
       aiSummary = 'AI analysis unavailable. Review the metrics below.';
     }
 
-    // 4. Return everything
     res.json({
       success: true,
-      city: scrapeResult.city,
-      searchQuery: scrapeResult.searchQuery,
-      scrapedAt: scrapeResult.scrapedAt,
-      source: scrapeResult.source,
+      city: cityLabel,
+      searchQuery: `${make} ${model}`,
+      scrapedAt: lastUpdated || new Date().toISOString(),
+      source: 'turo_api',
       dataSource,
+      lastUpdated,
       totalListings: analysis.totalListings,
       exactMatches,
       similarMatches,
@@ -103,81 +160,23 @@ app.post('/api/search', async (req, res) => {
   }
 });
 
-// Temporary debug endpoint to test proxy
-app.get('/api/debug-proxy', async (req, res) => {
-  try {
-    const https = await import('node:https');
-    const { HttpsProxyAgent } = await import('https-proxy-agent');
-    const user = (process.env.BRIGHT_DATA_USER || '').trim();
-    const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
-    const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
-    const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
-    const proxyUrl = `http://${user}:${pass}@${host}:${port}`;
-    const agent = new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
-
-    const data = await new Promise((resolve, reject) => {
-      const req = https.request({ hostname: 'lumtest.com', port: 443, path: '/myip.json', method: 'GET', agent, rejectUnauthorized: false }, (r) => {
-        let body = '';
-        r.on('data', chunk => body += chunk);
-        r.on('end', () => resolve({ status: r.statusCode, body: body.substring(0, 500) }));
-      });
-      req.on('error', reject);
-      req.end();
-    });
-
-    res.json({ proxyWorking: true, ...data, proxyUrl: `http://${user}:***@${host}:${port}` });
-  } catch (err) {
-    res.json({ proxyWorking: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
-  }
-});
-
-// Debug: test Turo API directly
-app.get('/api/debug-turo', async (req, res) => {
-  try {
-    const { CITY_COORDS } = await import('./services/turoScraper.js');
-    const https = await import('node:https');
-    const { HttpsProxyAgent } = await import('https-proxy-agent');
-    const user = (process.env.BRIGHT_DATA_USER || '').trim();
-    const pass = (process.env.BRIGHT_DATA_PASS || '').trim();
-    const host = (process.env.BRIGHT_DATA_HOST || 'brd.superproxy.io').trim();
-    const port = (process.env.BRIGHT_DATA_PORT || '33335').trim();
-    const agent = new HttpsProxyAgent(`http://${user}:${pass}@${host}:${port}`, { rejectUnauthorized: false });
-
-    const city = CITY_COORDS.charlotte;
-    const d = new Date(); d.setDate(d.getDate() + 7);
-    const startDate = d.toISOString().split('T')[0];
-    d.setDate(d.getDate() + 3);
-    const endDate = d.toISOString().split('T')[0];
-
-    const bodyStr = JSON.stringify({
-      filters: { age: 30, dates: { end: `${endDate}T10:00`, start: `${startDate}T10:00` }, engines: [], features: [], location: { country: 'US', type: 'area', point: { lat: city.lat, lng: city.lng } }, makes: [], models: [], tmvTiers: [], types: [] },
-      flexibleType: 'NOT_FLEXIBLE', searchDurationType: 'DAILY', sorts: { direction: 'ASC', type: 'RELEVANCE' },
-    });
-
-    const data = await new Promise((resolve, reject) => {
-      const r = https.request({ hostname: 'turo.com', port: 443, path: '/api/v2/search', method: 'POST', agent, rejectUnauthorized: false, headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(bodyStr), 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36', 'Accept': 'application/json' } }, (resp) => {
-        let body = '';
-        resp.on('data', chunk => body += chunk);
-        resp.on('end', () => resolve({ status: resp.statusCode, headers: resp.headers, body: body.substring(0, 1000) }));
-      });
-      r.on('error', reject);
-      r.write(bodyStr);
-      r.end();
-    });
-
-    res.json({ turoTest: true, ...data });
-  } catch (err) {
-    res.json({ turoTest: false, error: err.message, stack: err.stack?.split('\n').slice(0, 5) });
-  }
-});
-
-app.post('/api/market-leaders', async (req, res) => {
+app.post('/api/market-leaders', (req, res) => {
   try {
     const { city } = req.body;
     if (!city) return res.status(400).json({ error: 'city is required' });
 
-    const result = await scrapeMarketLeaders(city);
-    res.json({ success: true, ...result });
+    const cached = getCachedData(city);
+    if (!cached || !cached.vehicles || cached.vehicles.length === 0) {
+      return res.status(404).json({ error: `No cached data for ${CITY_COORDS[city]?.label || city}. Run the scraper first.` });
+    }
+
+    const result = categorizeMarketData(cached.vehicles, cached.cityLabel);
+    res.json({
+      success: true,
+      ...result,
+      lastUpdated: cached.scrapedAt,
+      scrapedAt: cached.scrapedAt,
+    });
   } catch (err) {
     console.error('Market leaders error:', err);
     res.status(500).json({ error: 'Market scan failed. Please try again.' });
@@ -186,6 +185,8 @@ app.post('/api/market-leaders', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  const cached = Object.keys(CITY_COORDS).filter(c => fs.existsSync(path.join(DATA_DIR, `${c}.json`)));
+  console.log(`Cached data: ${cached.length}/${Object.keys(CITY_COORDS).length} cities`);
 });
 
 export default app;

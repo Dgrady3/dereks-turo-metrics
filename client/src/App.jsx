@@ -192,6 +192,11 @@ export default function App() {
 
             {results && !loading && (
               <>
+                {results.lastUpdated && (
+                  <div style={{ textAlign: 'center', marginBottom: '12px', fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#555' }}>
+                    Data as of {new Date(results.lastUpdated).toLocaleString()}
+                  </div>
+                )}
                 {results.dataSource === 'sample' && (
                   <div style={{ background: 'rgba(255,214,0,0.08)', border: '1px solid rgba(255,214,0,0.3)', borderRadius: '4px', padding: '12px 20px', marginBottom: '16px', textAlign: 'center' }}>
                     <div style={{ fontFamily: 'Rajdhani, sans-serif', color: '#ffd600', fontSize: '14px', fontWeight: 600 }}>

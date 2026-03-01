@@ -1,0 +1,12 @@
+{
+  "name": "turo-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "scrape": "node scrape-all.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "puppeteer": "^24.37.5"
+  }
+}

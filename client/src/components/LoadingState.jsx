@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 
 const DEFAULT_PHASES = [
-  { label: 'Searching Turo listings', detail: 'Finding cars in your area...', duration: 4000 },
-  { label: 'Pulling rental data', detail: 'Gathering prices, trips & ratings...', duration: 5000 },
-  { label: 'Analyzing market trends', detail: 'Crunching supply & demand numbers...', duration: 4000 },
-  { label: 'Looking up cost estimates', detail: 'Insurance, fuel, maintenance & depreciation...', duration: 3000 },
-  { label: 'Generating AI summary', detail: 'Claude is reviewing the data...', duration: 6000 },
+  { label: 'Loading market data', detail: 'Pulling cached vehicle listings...', duration: 1500 },
+  { label: 'Analyzing market trends', detail: 'Crunching supply & demand numbers...', duration: 1500 },
+  { label: 'Generating AI summary', detail: 'Claude is reviewing the data...', duration: 2000 },
+  { label: 'Yeee-yeee!', detail: 'Almost there...', duration: 1000 },
 ];
 
 export default function LoadingState({ phases, accentColor }) {

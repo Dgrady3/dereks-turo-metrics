@@ -116,10 +116,9 @@ export default function MarketLeaders() {
         <LoadingState
           accentColor="#ffd600"
           phases={[
-            { label: 'Connecting to Turo', detail: 'Establishing session with marketplace...', duration: 3000 },
-            { label: 'Scanning all vehicles', detail: 'Pulling every listing in the area...', duration: 5000 },
-            { label: 'Grouping by make & model', detail: 'Organizing vehicles into categories...', duration: 2000 },
-            { label: 'Ranking opportunities', detail: 'Calculating profit, demand & competition...', duration: 3000 },
+            { label: 'Loading market data', detail: 'Fetching cached vehicle listings...', duration: 1500 },
+            { label: 'Ranking opportunities', detail: 'Calculating profit, demand & competition...', duration: 1500 },
+            { label: 'Yeee-yeee!', detail: 'Almost there...', duration: 1000 },
           ]}
         />
       )}
@@ -135,10 +134,11 @@ export default function MarketLeaders() {
       {data && !loading && (
         <>
           {/* Stats bar */}
-          <div className="market-leaders-stats" style={{ display: 'flex', gap: '24px', marginBottom: '16px', fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#888' }}>
+          <div className="market-leaders-stats" style={{ display: 'flex', gap: '24px', marginBottom: '16px', fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#888', flexWrap: 'wrap' }}>
             <span><span style={{ color: '#ffd600', fontWeight: 700 }}>{data.totalVehicles}</span> vehicles scanned</span>
             <span><span style={{ color: '#ffd600', fontWeight: 700 }}>{data.totalModels}</span> unique models</span>
             <span>{data.city}</span>
+            {data.lastUpdated && <span>Updated: {new Date(data.lastUpdated).toLocaleString()}</span>}
           </div>
 
           {/* Category tabs */}
