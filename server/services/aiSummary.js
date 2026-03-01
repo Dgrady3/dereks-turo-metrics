@@ -42,13 +42,22 @@ ${rankedByProfit.slice(0, 5).map((l, i) => `${i + 1}. ${l.title} — $${l.monthl
 
 IMPORTANT: Your recommendation MUST match our verdict of "${metrics.verdict.verdict}". Do not contradict the data-driven verdict. If the verdict is PASS, explain why the numbers don't support it. If BUY, explain why it's a good opportunity. If MAYBE, explain the trade-offs.
 
-Based on this data, provide a concise investment analysis (3-5 sentences). Include:
+## Cost Assumptions Built Into Our Profit Estimates
+- Turo commission: 25%
+- Monthly insurance: ~$150
+- Monthly depreciation: ~$200
+- Monthly maintenance: ~$75
+- Total fixed monthly costs: ~$425
+
+Based on this data, provide a concise investment analysis (4-6 sentences). Include:
 1. Start with "RECOMMENDATION: ${metrics.verdict.verdict}" and explain why the data supports this
 2. The best specific year/trim to target and why
-3. Expected monthly profit range
-4. Key risk or opportunity (saturation, pricing, competition)
+3. Expected monthly profit range AFTER accounting for Turo's 25% cut, insurance (~$150/mo), depreciation (~$200/mo), and maintenance (~$75/mo)
+4. Whether buying NEW vs USED makes more sense for this vehicle (consider depreciation hit on new cars vs reliability/maintenance costs on older ones)
+5. Key risk or opportunity (saturation, pricing, competition, insurance costs for this vehicle type)
+6. If the vehicle is a luxury/sports car, flag higher insurance premiums. If it's an SUV/truck, note typically better Turo demand but higher fuel costs.
 
-Be direct and actionable. Derek is a car guy, not a finance guy. Talk like a knowledgeable friend, not a textbook.`;
+Be direct and actionable. Derek is a car guy, not a finance guy. Talk like a knowledgeable friend, not a textbook. Always factor in REAL costs — don't just look at gross revenue.`;
 
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',

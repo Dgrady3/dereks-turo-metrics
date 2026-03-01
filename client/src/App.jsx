@@ -100,14 +100,14 @@ export default function App() {
   return (
     <div style={{ minHeight: '100vh', position: 'relative' }}>
       {/* Background gear 1 */}
-      <svg className="bg-gear-1" style={{ position: 'fixed', top: '-200px', right: '-150px', width: '600px', height: '600px', opacity: 0.025, zIndex: 0, animation: 'gear-spin 60s linear infinite' }} viewBox="0 0 100 100" fill="none">
+      <svg className="bg-gear-1" style={{ position: 'fixed', top: '-200px', right: '-150px', width: '600px', height: '600px', opacity: 0.045, zIndex: 0, animation: 'gear-spin 60s linear infinite' }} viewBox="0 0 100 100" fill="none">
         <path d="M50 15 L54 0 H46 L50 15 M50 85 L54 100 H46 L50 85 M15 50 L0 54 V46 L15 50 M85 50 L100 54 V46 L85 50 M22 22 L11 11 L18 4 L29 15 M78 22 L89 11 L82 4 L71 15 M22 78 L11 89 L18 96 L29 85 M78 78 L89 89 L82 96 L71 85" stroke="#00ff6a" strokeWidth="6"/>
         <circle cx="50" cy="50" r="35" stroke="#00ff6a" strokeWidth="8"/>
         <circle cx="50" cy="50" r="18" stroke="#00ff6a" strokeWidth="6"/>
       </svg>
 
       {/* Background gear 2 */}
-      <svg className="bg-gear-2" style={{ position: 'fixed', bottom: '-300px', left: '-200px', width: '800px', height: '800px', opacity: 0.025, zIndex: 0, animation: 'gear-spin 90s linear infinite reverse' }} viewBox="0 0 100 100" fill="none">
+      <svg className="bg-gear-2" style={{ position: 'fixed', bottom: '-300px', left: '-200px', width: '800px', height: '800px', opacity: 0.045, zIndex: 0, animation: 'gear-spin 90s linear infinite reverse' }} viewBox="0 0 100 100" fill="none">
         <path d="M50 15 L54 0 H46 L50 15 M50 85 L54 100 H46 L50 85 M15 50 L0 54 V46 L15 50 M85 50 L100 54 V46 L85 50 M22 22 L11 11 L18 4 L29 15 M78 22 L89 11 L82 4 L71 15 M22 78 L11 89 L18 96 L29 85 M78 78 L89 89 L82 96 L71 85" stroke="#00ff6a" strokeWidth="6"/>
         <circle cx="50" cy="50" r="35" stroke="#00ff6a" strokeWidth="8"/>
         <circle cx="50" cy="50" r="18" stroke="#00ff6a" strokeWidth="6"/>
@@ -227,6 +227,7 @@ export default function App() {
                   <VerdictBanner
                     verdict={results.metrics.verdict.verdict}
                     score={results.metrics.verdict.score}
+                    breakdown={results.metrics.verdict.breakdown}
                   />
                 )}
                 <MetricCards metrics={results.metrics} />
@@ -259,7 +260,12 @@ export default function App() {
 
         {/* === FLOW 2: Market Leaders === */}
         {mode === 'leaders' && (
-          <MarketLeaders />
+          <MarketLeaders onVehicleSearch={({ make, model, city }) => {
+            setMode('search');
+            setResults(null);
+            setError(null);
+            handleSearch({ make, model, city, sortBy: 'volume' });
+          }} />
         )}
 
         {/* Footer */}

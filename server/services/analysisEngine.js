@@ -35,10 +35,14 @@ export function analyzeListings(listings, purchasePrice = null) {
     annualROI: avgMonthlyNet > 0 ? Math.round((avgMonthlyNet * 12 / purchasePrice) * 100) : 0,
   } : null;
 
-  // Metric 2: Supply/Demand Score
+  // Metric 2: Supply/Demand Score (0-10 scale)
   const totalListings = enriched.length;
   const avgTrips = average(enriched.map(l => l.trips || 0));
-  const supplyDemandScore = totalListings > 0 ? Math.round((avgTrips / totalListings) * 100) / 100 : 0;
+  // Demand factor: 0-7 pts (50+ avg trips = max)
+  const demandFactor = Math.min(7, avgTrips / 7.15);
+  // Scarcity factor: 0-3 pts (fewer listings = better)
+  const scarcityFactor = totalListings <= 3 ? 3 : totalListings <= 8 ? 2 : totalListings <= 15 ? 1 : 0;
+  const supplyDemandScore = Math.round((demandFactor + scarcityFactor) * 10) / 10;
 
   // Metric 3: Revenue per Listing
   const revenues = enriched.map(l => l.monthlyGrossEst).sort((a, b) => a - b);
@@ -69,13 +73,22 @@ export function analyzeListings(listings, purchasePrice = null) {
 
   // Verdict with score — score drives the label
   // Score factors: monthly profit, demand (trips), competition, price consistency
-  const profitScore = Math.min(40, Math.max(0, avgMonthlyNet / 12.5)); // 0-40 pts, $500/mo = max
-  const demandScore = Math.min(25, Math.max(0, avgTrips / 4));         // 0-25 pts, 100 trips = max
-  const competitionScore = totalListings <= 3 ? 20 : totalListings <= 8 ? 15 : totalListings <= 15 ? 8 : 3; // fewer = better
-  const priceScore = Math.min(15, Math.max(0, (avgPrice - 30) / 6));   // 0-15 pts, higher price = more upside
-  const verdictScore = Math.min(100, Math.max(0, Math.round(profitScore + demandScore + competitionScore + priceScore)));
+  const profitPoints = Math.min(40, Math.max(0, avgMonthlyNet / 12.5)); // 0-40 pts, $500/mo = max
+  const demandPoints = Math.min(25, Math.max(0, avgTrips / 4));         // 0-25 pts, 100 trips = max
+  const competitionPoints = totalListings <= 3 ? 20 : totalListings <= 8 ? 15 : totalListings <= 15 ? 8 : 3; // fewer = better
+  const pricePoints = Math.min(15, Math.max(0, (avgPrice - 30) / 6));   // 0-15 pts, higher price = more upside
+  const verdictScore = Math.min(100, Math.max(0, Math.round(profitPoints + demandPoints + competitionPoints + pricePoints)));
   const verdictLabel = verdictScore >= 65 ? 'BUY' : verdictScore >= 40 ? 'MAYBE' : 'PASS';
-  const verdict = { verdict: verdictLabel, score: verdictScore };
+  const verdict = {
+    verdict: verdictLabel,
+    score: verdictScore,
+    breakdown: {
+      profit: { points: Math.round(profitPoints), max: 40, detail: `$${Math.round(avgMonthlyNet)}/mo est. profit` },
+      demand: { points: Math.round(demandPoints), max: 25, detail: `${Math.round(avgTrips)} avg lifetime trips` },
+      competition: { points: Math.round(competitionPoints), max: 20, detail: `${totalListings} listing${totalListings !== 1 ? 's' : ''} in area` },
+      pricing: { points: Math.round(pricePoints), max: 15, detail: `$${Math.round(avgPrice)}/day avg price` },
+    },
+  };
 
   return {
     metrics: { roi, supplyDemand: { totalListings, avgTripsPerListing: Math.round(avgTrips), score: supplyDemandScore }, revenuePerListing, competitiveDensity, verdict, avgMonthlyProfit: Math.round(avgMonthlyNet) },

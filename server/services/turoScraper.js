@@ -66,6 +66,7 @@ export function categorizeMarketData(vehicles, cityLabel) {
       demandSignal: groupDemand,
       demandReason: groupDemandReason,
       topListing: topByTrips,
+      sampleVehicleId: topByTrips?.vehicleId || null,
     };
   });
 

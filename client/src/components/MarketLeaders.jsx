@@ -11,7 +11,12 @@ const CATEGORIES = [
   { key: 'leastCompetition', label: 'Low Competition', icon: '○' },
 ];
 
-export default function MarketLeaders() {
+function turoUrl(vehicleId) {
+  if (!vehicleId) return null;
+  return `https://turo.com/us/en/car-rental/-/-/${vehicleId}`;
+}
+
+export default function MarketLeaders({ onVehicleSearch }) {
   const [city, setCity] = useState('charlotte');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -172,7 +177,7 @@ export default function MarketLeaders() {
             <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'Rajdhani, sans-serif', minWidth: '700px' }}>
               <thead>
                 <tr>
-                  {['#', 'Vehicle', 'Avg $/Day', 'Demand', 'Avg/Mo', 'Lifetime Trips', 'Rating', 'Listings', 'Est. Monthly'].map(h => (
+                  {['#', 'Vehicle', 'Avg $/Day', 'Demand', 'Avg/Mo', 'Lifetime Trips', 'Rating', 'Listings', 'Est. Monthly', ''].map(h => (
                     <th key={h} style={{ padding: '8px 12px', textAlign: h === '#' ? 'center' : 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#888', borderBottom: '1px solid #1e1e1e', fontFamily: 'Orbitron, sans-serif' }}>
                       {h}
                     </th>
@@ -184,7 +189,13 @@ export default function MarketLeaders() {
                   const demandColor = car.demandSignal === 'hot' ? '#00ff6a' : car.demandSignal === 'warm' ? '#ffd600' : '#ff3b3b';
                   const demandLabel = car.demandSignal === 'hot' ? 'HOT' : car.demandSignal === 'warm' ? 'WARM' : 'COLD';
                   return (
-                  <tr key={`${car.make}-${car.model}`} style={{ borderBottom: '1px solid #111' }}>
+                  <tr
+                    key={`${car.make}-${car.model}`}
+                    onClick={() => onVehicleSearch && onVehicleSearch({ make: car.make, model: car.model, city })}
+                    style={{ borderBottom: '1px solid #111', cursor: onVehicleSearch ? 'pointer' : 'default', transition: 'background 0.15s' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#1a1a1a'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <td style={{ padding: '10px 12px', textAlign: 'center', verticalAlign: 'middle', color: i < 3 ? '#ffd600' : '#555', fontWeight: 700, fontSize: '14px' }}>
                       {i + 1}
                     </td>
@@ -220,6 +231,22 @@ export default function MarketLeaders() {
                     </td>
                     <td style={{ padding: '10px 12px', verticalAlign: 'middle', color: car.estimatedMonthly > 300 ? '#00ff6a' : car.estimatedMonthly > 100 ? '#ffd600' : '#ff3b3b', fontWeight: 700, fontSize: '15px' }}>
                       ${car.estimatedMonthly.toLocaleString()}
+                    </td>
+                    <td style={{ padding: '10px 12px', verticalAlign: 'middle' }}>
+                      {car.sampleVehicleId && (
+                        <a
+                          href={turoUrl(car.sampleVehicleId)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ color: '#ffd600', fontSize: '12px', textDecoration: 'none', opacity: 0.7, transition: 'opacity 0.2s' }}
+                          onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                          onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+                          title="View on Turo"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                      )}
                     </td>
                   </tr>
                   );

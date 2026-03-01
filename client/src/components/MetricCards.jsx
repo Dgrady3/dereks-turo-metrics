@@ -36,10 +36,10 @@ export default function MetricCards({ metrics }) {
     : avgMonthlyProfit != null ? 'Est. monthly profit' : null;
   const roiLabel = roi ? 'Est. ROI' : 'Monthly Profit';
 
-  // Supply/Demand: score is trips-per-listing ratio, display as readable
+  // Supply/Demand: 0-10 scale (demand from trips + scarcity from low listings)
   const sdScore = supplyDemand?.score != null ? supplyDemand.score.toFixed(1) : null;
   const sdLabel = supplyDemand?.avgTripsPerListing != null
-    ? `${supplyDemand.avgTripsPerListing} avg trips/listing`
+    ? `${supplyDemand.avgTripsPerListing} avg trips across ${supplyDemand.totalListings} listing${supplyDemand.totalListings !== 1 ? 's' : ''}`
     : null;
 
   const cards = [

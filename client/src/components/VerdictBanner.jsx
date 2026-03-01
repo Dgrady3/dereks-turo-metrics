@@ -1,4 +1,11 @@
-export default function VerdictBanner({ verdict, score }) {
+const BREAKDOWN_LABELS = {
+  profit: { label: 'Profit Potential', icon: '$' },
+  demand: { label: 'Market Demand', icon: '↑' },
+  competition: { label: 'Competition', icon: '○' },
+  pricing: { label: 'Price Upside', icon: '◆' },
+};
+
+export default function VerdictBanner({ verdict, score, breakdown }) {
   const isBuy = verdict === 'BUY';
   const isMaybe = verdict === 'MAYBE';
 
@@ -86,6 +93,48 @@ export default function VerdictBanner({ verdict, score }) {
       }}>
         {subtitle}
       </div>
+
+      {breakdown && (
+        <div style={{
+          marginTop: '20px',
+          paddingTop: '16px',
+          borderTop: `1px solid ${borderColor}`,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: '12px',
+          maxWidth: '600px',
+          margin: '20px auto 0',
+        }}>
+          {Object.entries(breakdown).map(([key, { points, max, detail }]) => {
+            const info = BREAKDOWN_LABELS[key] || { label: key, icon: '•' };
+            const pct = Math.round((points / max) * 100);
+            return (
+              <div key={key} style={{ textAlign: 'left' }}>
+                <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#888', marginBottom: '4px' }}>
+                  {info.icon} {info.label}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                  <div style={{ flex: 1, height: '4px', background: '#1e1e1e', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${pct}%`,
+                      background: color,
+                      borderRadius: '2px',
+                      transition: 'width 0.6s ease',
+                    }} />
+                  </div>
+                  <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', fontWeight: 700, color, minWidth: '40px' }}>
+                    {points}/{max}
+                  </span>
+                </div>
+                <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '11px', color: '#666' }}>
+                  {detail}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

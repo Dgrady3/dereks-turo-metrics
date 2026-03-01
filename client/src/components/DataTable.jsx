@@ -1,5 +1,12 @@
+function turoUrl(vehicleId) {
+  if (!vehicleId) return null;
+  return `https://turo.com/us/en/car-rental/-/-/${vehicleId}`;
+}
+
 export default function DataTable({ title, data, columns, icon }) {
   if (!data || data.length === 0) return null;
+
+  const hasVehicleIds = data.some(row => row.vehicleId);
 
   return (
     <div style={{ background: '#141414', border: '1px solid #1e1e1e', borderRadius: '4px', marginBottom: '32px', position: 'relative', overflow: 'hidden' }}>
@@ -18,6 +25,7 @@ export default function DataTable({ title, data, columns, icon }) {
                   {col.label}
                 </th>
               ))}
+              {hasVehicleIds && <th style={{ width: '40px' }} />}
             </tr>
           </thead>
           <tbody>
@@ -31,6 +39,23 @@ export default function DataTable({ title, data, columns, icon }) {
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </td>
                 ))}
+                {hasVehicleIds && (
+                  <td style={{ padding: '12px 20px' }}>
+                    {row.vehicleId && (
+                      <a
+                        href={turoUrl(row.vehicleId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#00ff6a', fontSize: '12px', textDecoration: 'none', opacity: 0.6, transition: 'opacity 0.2s' }}
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+                        title="View on Turo"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      </a>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
