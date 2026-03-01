@@ -1,6 +1,10 @@
-function turoUrl(vehicleId) {
-  if (!vehicleId) return null;
-  return `https://turo.com/us/en/car-rental/-/-/${vehicleId}`;
+function turoUrl(row) {
+  if (!row?.vehicleId) return null;
+  const category = (row.seoCategory || row.type || 'car').toLowerCase();
+  const make = (row.make || '').toLowerCase();
+  const model = (row.model || '').toLowerCase().replace(/ /g, '-');
+  const year = row.year || '';
+  return `https://turo.com/us/en/${category}/${make}/${model}/${year}/${row.vehicleId}`;
 }
 
 export default function DataTable({ title, data, columns, icon }) {
@@ -43,7 +47,7 @@ export default function DataTable({ title, data, columns, icon }) {
                   <td style={{ padding: '12px 20px' }}>
                     {row.vehicleId && (
                       <a
-                        href={turoUrl(row.vehicleId)}
+                        href={turoUrl(row)}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{ color: '#00ff6a', fontSize: '12px', textDecoration: 'none', opacity: 0.6, transition: 'opacity 0.2s' }}

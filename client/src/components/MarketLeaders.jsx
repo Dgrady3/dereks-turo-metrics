@@ -11,9 +11,13 @@ const CATEGORIES = [
   { key: 'leastCompetition', label: 'Low Competition', icon: '○' },
 ];
 
-function turoUrl(vehicleId) {
-  if (!vehicleId) return null;
-  return `https://turo.com/us/en/car-rental/-/-/${vehicleId}`;
+function turoUrl(car) {
+  if (!car?.sampleVehicleId) return null;
+  const category = (car.type || 'car').toLowerCase();
+  const make = (car.make || '').toLowerCase();
+  const model = (car.model || '').toLowerCase().replace(/ /g, '-');
+  const year = car.topListing?.year || '';
+  return `https://turo.com/us/en/${category}/${make}/${model}/${year}/${car.sampleVehicleId}`;
 }
 
 export default function MarketLeaders({ onVehicleSearch }) {
@@ -235,7 +239,7 @@ export default function MarketLeaders({ onVehicleSearch }) {
                     <td style={{ padding: '10px 12px', verticalAlign: 'middle' }}>
                       {car.sampleVehicleId && (
                         <a
-                          href={turoUrl(car.sampleVehicleId)}
+                          href={turoUrl(car)}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}

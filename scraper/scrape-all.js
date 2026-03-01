@@ -70,6 +70,7 @@ function mapVehicle(v, cityLabel) {
     type: v.type || null,
     image: v.images?.[0]?.resizeableUrlTemplate?.replace('{width}', '400').replace('{height}', '250') || null,
     vehicleId: v.id,
+    seoCategory: (v.seoCategory || v.type || 'car').toLowerCase(),
     city: v.location?.city || cityLabel.split(',')[0],
     distance: v.location?.distance?.value ? Math.round(v.location.distance.value * 10) / 10 : null,
     isNewListing: isNew,
