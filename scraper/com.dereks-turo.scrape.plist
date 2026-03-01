@@ -27,7 +27,7 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/node</string>
+    <string>/Users/joegrady/.nvm/versions/node/v20.20.0/bin/node</string>
     <string>/Users/joegrady/Development/projects/dereks-turo-metrics/scraper/scrape-all.js</string>
   </array>
 
