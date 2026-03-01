@@ -157,12 +157,14 @@ function VehicleRow({ vehicle, index, isExpanded, onToggle, totalListings, aiSum
       {isExpanded && (
         <tr>
           <td colSpan={9} style={{ padding: 0, borderBottom: '1px solid #1e1e1e' }}>
-            <VehicleDiagnostics
-              vehicle={vehicle}
-              scoring={scoring}
-              totalListings={totalListings}
-              aiSummary={isFirst ? aiSummary : null}
-            />
+            <div style={{ position: 'sticky', left: 0, maxWidth: '100vw', boxSizing: 'border-box' }}>
+              <VehicleDiagnostics
+                vehicle={vehicle}
+                scoring={scoring}
+                totalListings={totalListings}
+                aiSummary={isFirst ? aiSummary : null}
+              />
+            </div>
           </td>
         </tr>
       )}
@@ -171,164 +173,125 @@ function VehicleRow({ vehicle, index, isExpanded, onToggle, totalListings, aiSum
 }
 
 function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
-  const pl = vehiclePL(vehicle);
   const color = scoring.verdict === 'BUY' ? '#00ff6a' : scoring.verdict === 'MAYBE' ? '#ffd600' : '#ff3b3b';
-  const borderColor = scoring.verdict === 'BUY' ? 'rgba(0,255,106,0.2)' : scoring.verdict === 'MAYBE' ? 'rgba(255,214,0,0.2)' : 'rgba(255,59,59,0.2)';
+  const pl = vehiclePL(vehicle);
 
   return (
-    <div style={{
-      background: '#111',
-      borderTop: `2px solid ${color}44`,
-      padding: '0',
-      animation: 'panel-open 0.3s ease-out',
-    }}>
-      <style>{`
-        @keyframes panel-open {
-          from { opacity: 0; max-height: 0; }
-          to { opacity: 1; max-height: 800px; }
-        }
-      `}</style>
+    <div style={{ padding: '16px', background: '#111' }}>
 
-      <div className="diag-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', minHeight: '200px' }}>
-
-        {/* ─── LEFT: Verdict + Score ─── */}
-        <div className="diag-verdict" style={{ borderRight: `1px solid ${borderColor}`, padding: '28px 32px' }}>
-          {/* Verdict header */}
-          <div className="diag-verdict-header" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
-            {/* Score ring */}
-            <div style={{ position: 'relative', width: '64px', height: '64px', flexShrink: 0 }}>
-              <svg width="64" height="64" viewBox="0 0 64 64" style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx="32" cy="32" r="27" fill="none" stroke="#1e1e1e" strokeWidth="4" />
-                <circle cx="32" cy="32" r="27" fill="none" stroke={color} strokeWidth="4"
-                  strokeDasharray={`${(scoring.score / 100) * 169.6} 169.6`}
-                  strokeLinecap="round"
-                  style={{ transition: 'stroke-dasharray 0.8s ease' }}
-                />
-              </svg>
-              <div style={{
-                position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'Orbitron, sans-serif', fontSize: '17px', fontWeight: 900, color,
-              }}>
-                {scoring.score}
-              </div>
-            </div>
-            <div>
-              <div className="diag-verdict-label" style={{
-                fontFamily: 'Orbitron, sans-serif',
-                fontSize: '28px',
-                fontWeight: 900,
-                letterSpacing: '4px',
-                color,
-                textShadow: `0 0 30px ${color}33`,
-                lineHeight: 1,
-              }}>
-                {scoring.verdict}
-              </div>
-              <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#666', marginTop: '4px' }}>
-                {scoring.verdict === 'BUY' ? 'Strong investment signal' : scoring.verdict === 'MAYBE' ? 'Review carefully' : 'Numbers don\'t support it'}
-              </div>
+      {/* ─── Row 1: Verdict + Profit side by side ─── */}
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
+        {/* Verdict badge */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px', background: '#0a0a0a', borderRadius: '4px', padding: '12px' }}>
+          <div style={{ position: 'relative', width: '44px', height: '44px', flexShrink: 0 }}>
+            <svg width="44" height="44" viewBox="0 0 44 44" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="22" cy="22" r="18" fill="none" stroke="#1e1e1e" strokeWidth="3" />
+              <circle cx="22" cy="22" r="18" fill="none" stroke={color} strokeWidth="3"
+                strokeDasharray={`${(scoring.score / 100) * 113} 113`}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Orbitron, sans-serif', fontSize: '12px', fontWeight: 900, color }}>
+              {scoring.score}
             </div>
           </div>
-
-          {/* Score breakdown bars */}
-          <div className="diag-breakdown-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 24px' }}>
-            {Object.entries(scoring.breakdown).map(([key, { points, max, detail }]) => {
-              const info = BREAKDOWN_LABELS[key] || { label: key, icon: '•' };
-              const pct = Math.round((points / max) * 100);
-              const barColor = pct >= 70 ? '#00ff6a' : pct >= 40 ? '#ffd600' : '#ff3b3b';
-              return (
-                <div key={key}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                    <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', fontWeight: 600, color: '#bbb' }}>
-                      {info.icon} {info.label}
-                    </span>
-                    <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '11px', fontWeight: 700, color: barColor }}>
-                      {points}/{max}
-                    </span>
-                  </div>
-                  <div style={{ height: '5px', background: '#1a1a1a', borderRadius: '3px', overflow: 'hidden' }}>
-                    <div style={{
-                      height: '100%',
-                      width: `${pct}%`,
-                      background: `linear-gradient(90deg, ${barColor}cc, ${barColor})`,
-                      borderRadius: '3px',
-                      transition: 'width 0.8s ease',
-                      boxShadow: `0 0 6px ${barColor}44`,
-                    }} />
-                  </div>
-                  <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '11px', color: '#555', marginTop: '3px' }}>
-                    {detail}
-                  </div>
-                </div>
-              );
-            })}
+          <div>
+            <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '18px', fontWeight: 900, letterSpacing: '2px', color, lineHeight: 1 }}>
+              {scoring.verdict}
+            </div>
+            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '11px', color: '#666', marginTop: '2px' }}>
+              {scoring.verdict === 'BUY' ? 'Strong signal' : scoring.verdict === 'MAYBE' ? 'Review carefully' : 'Numbers don\'t add up'}
+            </div>
           </div>
         </div>
 
-        {/* ─── RIGHT: Monthly P&L ─── */}
-        <div className="diag-pl" style={{ padding: '28px 32px' }}>
-          <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: '#555', marginBottom: '16px' }}>
-            Monthly P&L Estimate
+        {/* Profit callout */}
+        <div style={{ flex: 1, background: '#0a0a0a', borderRadius: '4px', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', color: '#555', textTransform: 'uppercase', marginBottom: '4px' }}>
+            Est. Monthly
           </div>
-
-          <PLRow label="Gross Revenue" sublabel={`$${pl.dailyPrice}/day × est. occupancy`} value={pl.gross} positive />
-          <PLRow label="Turo Fee (25%)" sublabel="Standard Go plan" value={-pl.turoFee} />
-          <PLDivider />
-          <PLRow label="Net After Turo" value={pl.afterTuro} positive bold />
-
-          <div style={{ height: '10px' }} />
-
-          <PLRow label="Insurance" sublabel="NC rideshare policy avg" value={-pl.insurance} />
-          <PLRow label="Depreciation" sublabel="~$200/mo est. — research your vehicle" value={-pl.depreciation} />
-          <PLRow label="Maintenance" sublabel="AAA avg — oil, tires, brakes" value={-pl.maintenance} />
-          <PLDivider />
-          <PLRow label="Total Costs" value={-pl.fixedCosts} bold />
-
-          {/* Bottom line */}
-          <div style={{ height: '2px', background: `linear-gradient(90deg, transparent, ${color}66, transparent)`, margin: '12px 0 8px' }} />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0' }}>
-            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '16px', fontWeight: 700, color: '#f0f0f0' }}>
-              Est. Monthly Profit
-            </span>
-            <span className="diag-profit-value" style={{
-              fontFamily: 'Orbitron, sans-serif',
-              fontSize: '22px',
-              fontWeight: 900,
-              color: pl.profit > 0 ? '#00ff6a' : '#ff3b3b',
-              textShadow: pl.profit > 0 ? '0 0 16px rgba(0,255,106,0.25)' : '0 0 16px rgba(255,59,59,0.25)',
-            }}>
-              {pl.profit >= 0 ? '+' : ''}${pl.profit}
-            </span>
+          <div style={{
+            fontFamily: 'Orbitron, sans-serif', fontSize: '22px', fontWeight: 900,
+            color: pl.profit > 0 ? '#00ff6a' : '#ff3b3b',
+            textShadow: pl.profit > 0 ? '0 0 12px rgba(0,255,106,0.2)' : '0 0 12px rgba(255,59,59,0.2)',
+          }}>
+            {pl.profit >= 0 ? '+' : ''}${pl.profit}
           </div>
-          <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '10px', color: '#444', marginTop: '4px', lineHeight: 1.4 }}>
-            * Estimates based on this vehicle's actual Turo performance. Not financial advice.
+          <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '10px', color: '#555', marginTop: '2px' }}>
+            ${pl.dailyPrice}/day · {Math.round(pl.gross / pl.dailyPrice)}d occ.
           </div>
         </div>
       </div>
 
-      {/* ─── AI Analysis (only on first expanded) ─── */}
-      {aiSummary && (
-        <div className="diag-ai" style={{ padding: '20px 32px 24px', borderTop: `1px solid ${borderColor}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" style={{ opacity: 0.7 }}>
-              <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
-              <path d="M12 12v8"/><path d="M8 20h8"/>
-              <circle cx="12" cy="6" r="1" fill={color}/>
-            </svg>
-            <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: '#555' }}>
-              AI Market Analysis
+      {/* ─── Row 2: Score breakdown — 2x2 grid ─── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '14px' }}>
+        {Object.entries(scoring.breakdown).map(([key, { points, max, detail }]) => {
+          const info = BREAKDOWN_LABELS[key] || { label: key, icon: '•' };
+          const pct = Math.round((points / max) * 100);
+          const barColor = pct >= 70 ? '#00ff6a' : pct >= 40 ? '#ffd600' : '#ff3b3b';
+          return (
+            <div key={key} style={{ background: '#0a0a0a', borderRadius: '4px', padding: '8px 10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '12px', fontWeight: 600, color: '#999' }}>
+                  {info.icon} {info.label}
+                </span>
+                <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '10px', fontWeight: 700, color: barColor }}>
+                  {points}/{max}
+                </span>
+              </div>
+              <div style={{ height: '4px', background: '#1a1a1a', borderRadius: '2px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${pct}%`, background: barColor, borderRadius: '2px', transition: 'width 0.6s ease' }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ─── Row 3: P&L compact — vertical list ─── */}
+      <div style={{ background: '#0a0a0a', borderRadius: '4px', padding: '10px 12px', marginBottom: '10px' }}>
+        {[
+          { label: 'Gross Revenue', value: pl.gross, color: '#00ff6a' },
+          { label: 'Turo Fee (25%)', value: -pl.turoFee, color: '#ff3b3b' },
+          { label: 'Costs (ins/dep/maint)', value: -pl.fixedCosts, color: '#ff3b3b' },
+        ].map(item => (
+          <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0', borderBottom: '1px solid #1a1a1a' }}>
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#888' }}>
+              {item.label}
+            </span>
+            <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '14px', fontWeight: 700, color: item.color }}>
+              {item.value < 0 ? '-' : '+'}${Math.abs(item.value)}
             </span>
           </div>
-          <div className="diag-ai-text" style={{
-            fontFamily: 'Rajdhani, sans-serif',
-            color: '#bbb',
-            fontSize: '14px',
-            lineHeight: 1.7,
-            whiteSpace: 'pre-wrap',
-            background: '#0d0d0d',
-            borderRadius: '4px',
-            padding: '16px 20px',
-            border: '1px solid #1a1a1a',
+        ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0 2px' }}>
+          <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '14px', fontWeight: 700, color: '#f0f0f0' }}>
+            Est. Monthly Profit
+          </span>
+          <span style={{
+            fontFamily: 'Orbitron, sans-serif', fontSize: '16px', fontWeight: 900,
+            color: pl.profit > 0 ? '#00ff6a' : '#ff3b3b',
+          }}>
+            {pl.profit >= 0 ? '+' : ''}${pl.profit}
+          </span>
+        </div>
+      </div>
+      <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '9px', color: '#333', textAlign: 'center', marginBottom: aiSummary ? '12px' : '0' }}>
+        Insurance $150 + Depreciation $200 + Maintenance $75 = $425/mo costs · Not financial advice
+      </div>
+
+      {/* ─── AI Analysis (only on first expanded) ─── */}
+      {aiSummary && (
+        <div style={{ background: '#0a0a0a', borderRadius: '4px', padding: '12px' }}>
+          <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', color: '#555', textTransform: 'uppercase', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" style={{ opacity: 0.7 }}>
+              <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+              <path d="M12 12v8"/><path d="M8 20h8"/>
+            </svg>
+            AI Analysis
+          </div>
+          <div style={{
+            fontFamily: 'Rajdhani, sans-serif', color: '#aaa', fontSize: '12px', lineHeight: 1.6,
+            whiteSpace: 'pre-wrap', wordBreak: 'break-word',
           }}>
             {aiSummary}
           </div>
