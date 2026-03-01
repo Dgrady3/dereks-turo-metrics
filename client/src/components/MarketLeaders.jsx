@@ -13,11 +13,9 @@ const CATEGORIES = [
 
 function turoUrl(car) {
   if (!car?.sampleVehicleId) return null;
-  const category = (car.type || 'car').toLowerCase();
   const make = (car.make || '').toLowerCase();
   const model = (car.model || '').toLowerCase().replace(/ /g, '-');
-  const year = car.topListing?.year || '';
-  return `https://turo.com/us/en/${category}/${make}/${model}/${year}/${car.sampleVehicleId}`;
+  return `https://turo.com/us/en/car-rental/united-states/${make}/${model}/${car.sampleVehicleId}`;
 }
 
 export default function MarketLeaders({ onVehicleSearch }) {

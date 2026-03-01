@@ -1,10 +1,8 @@
 function turoUrl(row) {
   if (!row?.vehicleId) return null;
-  const category = (row.seoCategory || row.type || 'car').toLowerCase();
   const make = (row.make || '').toLowerCase();
   const model = (row.model || '').toLowerCase().replace(/ /g, '-');
-  const year = row.year || '';
-  return `https://turo.com/us/en/${category}/${make}/${model}/${year}/${row.vehicleId}`;
+  return `https://turo.com/us/en/car-rental/united-states/${make}/${model}/${row.vehicleId}`;
 }
 
 export default function DataTable({ title, data, columns, icon }) {
