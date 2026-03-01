@@ -167,9 +167,39 @@ body::before {
     font-size: 13px !important;
   }
 
-  /* Vehicle diagnostics panel - stack on mobile */
-  .vehicle-diagnostics-grid {
+  /* Vehicle diagnostics — stack panels vertically */
+  .diag-grid {
     grid-template-columns: 1fr !important;
+  }
+  .diag-verdict {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 20px 16px !important;
+  }
+  .diag-pl {
+    padding: 20px 16px !important;
+  }
+  .diag-verdict-header {
+    gap: 14px !important;
+    margin-bottom: 18px !important;
+  }
+  .diag-verdict-label {
+    font-size: 22px !important;
+    letter-spacing: 2px !important;
+  }
+  .diag-breakdown-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .diag-profit-value {
+    font-size: 18px !important;
+  }
+  .diag-ai {
+    padding: 16px !important;
+  }
+  .diag-ai-text {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
   }
 
   /* Header mobile: Derek's / Titsy / TURO / Metrics stacked */

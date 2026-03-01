@@ -92,8 +92,11 @@ function VehicleRow({ vehicle, index, isExpanded, onToggle, totalListings, aiSum
         <td style={{ fontFamily: 'Orbitron, sans-serif', padding: '14px 20px', color: '#00ff6a', fontWeight: 700, fontSize: '14px', width: '40px' }}>
           {index + 1}
         </td>
+        <td style={{ fontFamily: 'Rajdhani, sans-serif', padding: '14px 16px', color: '#888', fontSize: '14px', fontWeight: 600 }}>
+          {vehicle.year || '—'}
+        </td>
         <td style={{ fontFamily: 'Rajdhani, sans-serif', padding: '14px 16px', color: '#f0f0f0', fontSize: '15px', fontWeight: 700 }}>
-          {vehicle.year || ''} {vehicle.make} {vehicle.model}
+          {vehicle.make} {vehicle.model}
         </td>
         <td style={{ fontFamily: 'Rajdhani, sans-serif', padding: '14px 16px', color: '#ccc', fontSize: '15px', fontWeight: 600 }}>
           ${vehicle.dailyPrice || '—'}
@@ -153,7 +156,7 @@ function VehicleRow({ vehicle, index, isExpanded, onToggle, totalListings, aiSum
       {/* ─── Expanded Diagnostic Panel ─── */}
       {isExpanded && (
         <tr>
-          <td colSpan={8} style={{ padding: 0, borderBottom: '1px solid #1e1e1e' }}>
+          <td colSpan={9} style={{ padding: 0, borderBottom: '1px solid #1e1e1e' }}>
             <VehicleDiagnostics
               vehicle={vehicle}
               scoring={scoring}
@@ -186,12 +189,12 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
         }
       `}</style>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', minHeight: '200px' }}>
+      <div className="diag-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0', minHeight: '200px' }}>
 
         {/* ─── LEFT: Verdict + Score ─── */}
-        <div style={{ borderRight: `1px solid ${borderColor}`, padding: '28px 32px' }}>
+        <div className="diag-verdict" style={{ borderRight: `1px solid ${borderColor}`, padding: '28px 32px' }}>
           {/* Verdict header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+          <div className="diag-verdict-header" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
             {/* Score ring */}
             <div style={{ position: 'relative', width: '64px', height: '64px', flexShrink: 0 }}>
               <svg width="64" height="64" viewBox="0 0 64 64" style={{ transform: 'rotate(-90deg)' }}>
@@ -210,7 +213,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
               </div>
             </div>
             <div>
-              <div style={{
+              <div className="diag-verdict-label" style={{
                 fontFamily: 'Orbitron, sans-serif',
                 fontSize: '28px',
                 fontWeight: 900,
@@ -228,7 +231,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
           </div>
 
           {/* Score breakdown bars */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 24px' }}>
+          <div className="diag-breakdown-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 24px' }}>
             {Object.entries(scoring.breakdown).map(([key, { points, max, detail }]) => {
               const info = BREAKDOWN_LABELS[key] || { label: key, icon: '•' };
               const pct = Math.round((points / max) * 100);
@@ -263,7 +266,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
         </div>
 
         {/* ─── RIGHT: Monthly P&L ─── */}
-        <div style={{ padding: '28px 32px' }}>
+        <div className="diag-pl" style={{ padding: '28px 32px' }}>
           <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: '10px', fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: '#555', marginBottom: '16px' }}>
             Monthly P&L Estimate
           </div>
@@ -287,7 +290,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
             <span style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '16px', fontWeight: 700, color: '#f0f0f0' }}>
               Est. Monthly Profit
             </span>
-            <span style={{
+            <span className="diag-profit-value" style={{
               fontFamily: 'Orbitron, sans-serif',
               fontSize: '22px',
               fontWeight: 900,
@@ -305,7 +308,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
 
       {/* ─── AI Analysis (only on first expanded) ─── */}
       {aiSummary && (
-        <div style={{ padding: '20px 32px 24px', borderTop: `1px solid ${borderColor}` }}>
+        <div className="diag-ai" style={{ padding: '20px 32px 24px', borderTop: `1px solid ${borderColor}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" style={{ opacity: 0.7 }}>
               <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
@@ -316,7 +319,7 @@ function VehicleDiagnostics({ vehicle, scoring, totalListings, aiSummary }) {
               AI Market Analysis
             </span>
           </div>
-          <div style={{
+          <div className="diag-ai-text" style={{
             fontFamily: 'Rajdhani, sans-serif',
             color: '#bbb',
             fontSize: '14px',
@@ -408,7 +411,7 @@ export default function VehicleList({ data, sortBy, aiSummary, title }) {
         <table className="data-table" style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', minWidth: '700px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #1e1e1e' }}>
-              {['#', 'Vehicle', 'Daily Price', 'Demand', 'Trips', 'Rating', 'Score', ''].map(h => (
+              {['#', 'Year', 'Vehicle', 'Daily Price', 'Demand', 'Trips', 'Rating', 'Score', ''].map(h => (
                 <th key={h} style={{ fontFamily: 'Orbitron, sans-serif', padding: '10px 16px', fontSize: '9px', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: '#888' }}>
                   {h}
                 </th>
