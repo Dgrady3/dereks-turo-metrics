@@ -46,9 +46,5 @@ export const CARS = {
 export const NC_CITIES = [
   { value: 'charlotte', label: 'Charlotte, NC' },
   { value: 'raleigh', label: 'Raleigh, NC' },
-  { value: 'durham', label: 'Durham, NC' },
   { value: 'greensboro', label: 'Greensboro, NC' },
-  { value: 'wilmington', label: 'Wilmington, NC' },
-  { value: 'asheville', label: 'Asheville, NC' },
-  { value: 'fayetteville', label: 'Fayetteville, NC' },
 ];

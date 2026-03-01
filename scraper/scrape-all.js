@@ -12,11 +12,7 @@ if (!API_URL || !INGEST_API_KEY) {
 const CITY_COORDS = {
   charlotte: { lat: 35.2271, lng: -80.8431, label: 'Charlotte, NC' },
   raleigh: { lat: 35.7796, lng: -78.6382, label: 'Raleigh, NC' },
-  durham: { lat: 35.9940, lng: -78.8986, label: 'Durham, NC' },
   greensboro: { lat: 36.0726, lng: -79.7920, label: 'Greensboro, NC' },
-  wilmington: { lat: 34.2257, lng: -77.9447, label: 'Wilmington, NC' },
-  asheville: { lat: 35.5951, lng: -82.5515, label: 'Asheville, NC' },
-  fayetteville: { lat: 35.0527, lng: -78.8784, label: 'Fayetteville, NC' },
 };
 
 function getFutureDate(daysFromNow) {
