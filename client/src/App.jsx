@@ -3,7 +3,6 @@ import { API_BASE } from './api';
 import SearchPanel from './components/SearchPanel';
 import LoadingState from './components/LoadingState';
 import VerdictBanner from './components/VerdictBanner';
-import AISummary from './components/AISummary';
 import MetricCards from './components/MetricCards';
 import DataTable from './components/DataTable';
 import InvestmentCalculator from './components/InvestmentCalculator';
@@ -228,13 +227,14 @@ export default function App() {
                     verdict={results.metrics.verdict.verdict}
                     score={results.metrics.verdict.score}
                     breakdown={results.metrics.verdict.breakdown}
+                    aiSummary={results.aiSummary}
+                    costBreakdown={results.metrics.costBreakdown}
                   />
                 )}
                 <MetricCards metrics={results.metrics} />
                 <InvestmentCalculator
                   avgDailyPrice={results.metrics?.competitiveDensity?.avgDailyPrice}
                 />
-                {results.aiSummary && <AISummary summary={results.aiSummary} />}
                 <DataTable
                   title="Top Cars by Volume"
                   data={results.rankedByVolume}

@@ -40,7 +40,18 @@ export default function InvestmentCalculator({ avgDailyPrice }) {
     setRoi(calculateROI(rawPrice, avgDailyPrice));
   };
 
-  const verdict = roi ? (roi.annualROI >= 20 ? 'STRONG BUY' : roi.annualROI >= 10 ? 'BUY' : roi.annualROI >= 0 ? 'MAYBE' : 'PASS') : null;
+  // Verdict based on payoff period — the real measure of a good investment
+  // STRONG BUY: pays itself off in under 2 years
+  // BUY: pays off in under 4 years
+  // MAYBE: pays off in under 6 years with decent monthly profit
+  // PASS: everything else (including 598 month payoffs!)
+  const verdict = roi ? (
+    roi.monthlyProfit <= 0 ? 'PASS' :
+    roi.payoffMonths && roi.payoffMonths <= 24 ? 'STRONG BUY' :
+    roi.payoffMonths && roi.payoffMonths <= 48 ? 'BUY' :
+    roi.payoffMonths && roi.payoffMonths <= 72 && roi.monthlyProfit >= 150 ? 'MAYBE' :
+    'PASS'
+  ) : null;
   const verdictColor = verdict === 'STRONG BUY' || verdict === 'BUY' ? '#00ff6a' : verdict === 'MAYBE' ? '#ffd600' : '#ff3b3b';
 
   return (
@@ -171,7 +182,11 @@ export default function InvestmentCalculator({ avgDailyPrice }) {
                   {verdict}
                 </div>
                 <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '13px', color: '#888', marginTop: '4px' }}>
-                  {roi.annualROI >= 10 ? 'This looks like a solid investment based on the data' : roi.annualROI >= 0 ? 'Marginal returns — review the numbers carefully' : 'The numbers don\'t support this purchase price'}
+                  {verdict === 'STRONG BUY' ? `Pays for itself in ${roi.payoffMonths} months — excellent investment`
+                    : verdict === 'BUY' ? `${roi.payoffMonths} month payoff — solid investment at this price`
+                    : verdict === 'MAYBE' ? `${roi.payoffMonths} month payoff — marginal, review carefully`
+                    : roi.monthlyProfit <= 0 ? 'You\'d lose money every month at this price'
+                    : `${roi.payoffMonths} month payoff (${Math.round(roi.payoffMonths / 12)} years) — not worth tying up $${rawPrice.toLocaleString()}`}
                 </div>
               </div>
 

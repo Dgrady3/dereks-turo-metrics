@@ -90,8 +90,25 @@ export function analyzeListings(listings, purchasePrice = null) {
     },
   };
 
+  // Line-item cost breakdown for transparency
+  const avgMonthlyGross = Math.round(average(enriched.map(l => l.monthlyGrossEst)));
+  const turoFeeAmount = Math.round(avgMonthlyGross * DEFAULTS.turoCommission);
+  const afterTuroFees = avgMonthlyGross - turoFeeAmount;
+  const costBreakdown = {
+    avgDailyRate: Math.round(avgPrice),
+    monthlyGrossRevenue: avgMonthlyGross,
+    turoFee: turoFeeAmount,
+    turoFeePercent: Math.round(DEFAULTS.turoCommission * 100),
+    afterTuroFees,
+    insurance: DEFAULTS.monthlyInsurance,
+    depreciation: DEFAULTS.monthlyDepreciation,
+    maintenance: DEFAULTS.monthlyMaintenance,
+    totalMonthlyCosts: fixedMonthlyCosts,
+    estimatedMonthlyProfit: Math.round(avgMonthlyNet),
+  };
+
   return {
-    metrics: { roi, supplyDemand: { totalListings, avgTripsPerListing: Math.round(avgTrips), score: supplyDemandScore }, revenuePerListing, competitiveDensity, verdict, avgMonthlyProfit: Math.round(avgMonthlyNet) },
+    metrics: { roi, supplyDemand: { totalListings, avgTripsPerListing: Math.round(avgTrips), score: supplyDemandScore }, revenuePerListing, competitiveDensity, verdict, avgMonthlyProfit: Math.round(avgMonthlyNet), costBreakdown },
     rankedByVolume,
     rankedByProfit,
     totalListings: enriched.length,
