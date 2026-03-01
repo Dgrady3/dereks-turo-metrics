@@ -2,48 +2,10 @@ import { useState } from 'react';
 import { API_BASE } from './api';
 import SearchPanel from './components/SearchPanel';
 import LoadingState from './components/LoadingState';
-import VerdictBanner from './components/VerdictBanner';
 import MetricCards from './components/MetricCards';
-import DataTable from './components/DataTable';
+import VehicleList from './components/VehicleList';
 import InvestmentCalculator from './components/InvestmentCalculator';
 import MarketLeaders from './components/MarketLeaders';
-
-const DemandBadge = ({ signal, reason }) => {
-  const color = signal === 'hot' ? '#00ff6a' : signal === 'warm' ? '#ffd600' : '#ff3b3b';
-  const label = signal === 'hot' ? 'HOT' : signal === 'warm' ? 'WARM' : 'COLD';
-  return (
-    <div>
-      <span style={{ color, fontWeight: 700, fontSize: '11px', letterSpacing: '1px', padding: '2px 8px', background: `${color}15`, border: `1px solid ${color}40`, borderRadius: '3px', fontFamily: 'Orbitron, sans-serif' }}>
-        {label}
-      </span>
-      {reason && (
-        <div style={{ fontSize: '11px', color: '#666', marginTop: '3px', lineHeight: 1.3, maxWidth: '180px' }}>
-          {reason}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const volumeColumns = [
-  { key: 'make', label: 'Make' },
-  { key: 'model', label: 'Model' },
-  { key: 'dailyPrice', label: 'Daily Price', render: (v) => v ? `$${v}` : '—' },
-  { key: 'demandSignal', label: 'Demand', render: (v, row) => <DemandBadge signal={v || 'cold'} reason={row.demandReason} /> },
-  { key: 'monthlyTrips', label: 'Trips/Mo', render: (v) => v != null ? `${v}/mo` : '—' },
-  { key: 'trips', label: 'Lifetime Trips', render: (v) => v ?? '—' },
-  { key: 'rating', label: 'Rating', render: (v) => v ? `${v} ★` : '—' },
-];
-
-const profitColumns = [
-  { key: 'make', label: 'Make' },
-  { key: 'model', label: 'Model' },
-  { key: 'dailyPrice', label: 'Daily Price', render: (v) => v ? `$${v}` : '—' },
-  { key: 'demandSignal', label: 'Demand', render: (v, row) => <DemandBadge signal={v || 'cold'} reason={row.demandReason} /> },
-  { key: 'monthlyTrips', label: 'Trips/Mo', render: (v) => v != null ? `${v}/mo` : '—' },
-  { key: 'estimatedMonthly', label: 'Est. Monthly', render: (v) => v ? `$${v}` : '—' },
-  { key: 'rating', label: 'Rating', render: (v) => v ? `${v} ★` : '—' },
-];
 
 const MODES = [
   { key: 'search', label: 'Search Turo Market', desc: 'Look up a specific make & model' },
@@ -222,37 +184,16 @@ export default function App() {
                     </div>
                   </div>
                 )}
-                {results.metrics?.verdict && (
-                  <VerdictBanner
-                    verdict={results.metrics.verdict.verdict}
-                    score={results.metrics.verdict.score}
-                    breakdown={results.metrics.verdict.breakdown}
-                    aiSummary={results.aiSummary}
-                    costBreakdown={results.metrics.costBreakdown}
-                  />
-                )}
                 <MetricCards metrics={results.metrics} />
+                <VehicleList
+                  data={results.sortBy === 'profit' ? results.rankedByProfit : results.rankedByVolume}
+                  sortBy={results.sortBy || 'volume'}
+                  aiSummary={results.aiSummary}
+                  title={`${results.searchQuery} in ${results.city}`}
+                />
                 <InvestmentCalculator
                   avgDailyPrice={results.metrics?.competitiveDensity?.avgDailyPrice}
                 />
-                <DataTable
-                  title="Top Cars by Volume"
-                  data={results.rankedByVolume}
-                  columns={volumeColumns}
-                  icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>}
-                />
-                <DataTable
-                  title="Top Cars by Estimated Profit"
-                  data={results.rankedByProfit}
-                  columns={profitColumns}
-                  icon={<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>}
-                />
-                <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '12px', color: '#555', textAlign: 'center', marginTop: '-16px', marginBottom: '32px' }}>
-                  <span style={{ color: '#00ff6a' }}>HOT</span> = 50+ trips or new listing w/ 5+ trips &nbsp;|&nbsp;
-                  <span style={{ color: '#ffd600' }}>WARM</span> = 10+ trips or new w/ bookings &nbsp;|&nbsp;
-                  <span style={{ color: '#ff3b3b' }}>COLD</span> = unproven demand.
-                  Trips are lifetime totals from Turo (recent breakdown unavailable).
-                </div>
               </>
             )}
           </>

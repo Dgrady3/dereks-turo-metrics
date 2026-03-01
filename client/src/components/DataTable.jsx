@@ -1,8 +1,9 @@
 function turoUrl(row) {
   if (!row?.vehicleId) return null;
+  const slug = row.locationSlug || 'charlotte-nc';
   const make = (row.make || '').toLowerCase();
   const model = (row.model || '').toLowerCase().replace(/ /g, '-');
-  return `https://turo.com/us/en/car-rental/united-states/${make}/${model}/${row.vehicleId}`;
+  return `https://turo.com/us/en/car-rental/united-states/${slug}/${make}/${model}/${row.vehicleId}`;
 }
 
 export default function DataTable({ title, data, columns, icon }) {

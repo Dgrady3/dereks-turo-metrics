@@ -13,9 +13,10 @@ const CATEGORIES = [
 
 function turoUrl(car) {
   if (!car?.sampleVehicleId) return null;
+  const slug = car.sampleLocationSlug || 'charlotte-nc';
   const make = (car.make || '').toLowerCase();
   const model = (car.model || '').toLowerCase().replace(/ /g, '-');
-  return `https://turo.com/us/en/car-rental/united-states/${make}/${model}/${car.sampleVehicleId}`;
+  return `https://turo.com/us/en/car-rental/united-states/${slug}/${make}/${model}/${car.sampleVehicleId}`;
 }
 
 export default function MarketLeaders({ onVehicleSearch }) {
