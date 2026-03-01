@@ -5,7 +5,9 @@ function calculateROI(purchasePrice, avgDailyPrice) {
   const turoFeeRate = 0.25;
   const monthlyInsurance = 150;
   const monthlyMaintenance = 100;
-  const monthlyDepreciation = purchasePrice * 0.01;
+  // Flat $200/mo estimate — depreciation varies wildly by vehicle, age, mileage
+  // Flagged to user as "do your own research" number
+  const monthlyDepreciation = 200;
 
   const monthlyRevenue = Math.round(avgDailyPrice * 30 * occupancyRate);
   const turoFees = Math.round(monthlyRevenue * turoFeeRate);
@@ -221,7 +223,7 @@ export default function InvestmentCalculator({ avgDailyPrice }) {
                   { label: 'Turo fees (25%)', value: roi.turoFees, source: 'Turo host fee — standard plan' },
                   { label: 'Insurance', value: roi.monthlyInsurance, source: 'Avg commercial rideshare policy in NC' },
                   { label: 'Maintenance', value: roi.monthlyMaintenance, source: 'AAA avg for sedans — tires, oil, brakes' },
-                  { label: 'Depreciation', value: roi.monthlyDepreciation, source: `1% of purchase price/mo — IRS standard` },
+                  { label: 'Depreciation ⚠️', value: roi.monthlyDepreciation, source: 'Rough est. ~$200/mo — varies heavily by make/model/year. Research your specific vehicle!' },
                 ].map(item => (
                   <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '6px 0', fontFamily: 'Rajdhani, sans-serif', fontSize: '14px' }}>
                     <div>
