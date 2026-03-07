@@ -3,6 +3,7 @@ import cors from 'cors';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { CITY_COORDS, categorizeMarketData } from './services/turoScraper.js';
 import { analyzeListings } from './services/analysisEngine.js';
@@ -17,9 +18,25 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json({ limit: '10mb' }));
+
+// --- Auth helpers ---
+function optionalAuth(req, res, next) {
+  const auth = req.headers.authorization;
+  if (auth?.startsWith('Bearer ')) {
+    try { req.user = jwt.verify(auth.slice(7), JWT_SECRET).user; }
+    catch { req.user = null; }
+  } else { req.user = null; }
+  next();
+}
+
+// --- Demo data loader ---
+let demoData = null;
+try { demoData = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'demo.json'), 'utf-8')); }
+catch { console.warn('Demo data not loaded'); }
 
 // Read cached data for a city
 function getCachedData(cityKey) {
@@ -32,10 +49,39 @@ function getCachedData(cityKey) {
   }
 }
 
+// Helper: serve demo search result with freshened timestamps
+function serveDemoSearch(searchKey) {
+  const result = demoData.search[searchKey] || demoData.search[demoData.defaultSearch];
+  if (!result) return null;
+  return {
+    ...result,
+    scrapedAt: new Date(Date.now() - 2 * 3600000).toISOString(),
+    lastUpdated: new Date(Date.now() - 2 * 3600000).toISOString(),
+    isDemo: true,
+  };
+}
+
 app.get('/api/health', (req, res) => {
   const cities = Object.keys(CITY_COORDS);
   const cached = cities.filter(c => fs.existsSync(path.join(DATA_DIR, `${c}.json`)));
   res.json({ status: 'ok', timestamp: new Date().toISOString(), cachedCities: cached.length, totalCities: cities.length });
+});
+
+// --- Auth endpoints ---
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+  if (username !== 'derek' || password !== process.env.DEREK_PASSWORD) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  const token = jwt.sign({ user: 'derek' }, JWT_SECRET, { expiresIn: '7d' });
+  res.json({ success: true, token, user: 'derek' });
+});
+
+app.get('/api/me', optionalAuth, (req, res) => {
+  res.json({ authenticated: !!req.user, user: req.user || null });
 });
 
 // Ingest endpoint — receives scraped data from local cron job
@@ -63,11 +109,23 @@ app.post('/api/ingest', (req, res) => {
   }
 });
 
-app.post('/api/search', async (req, res) => {
+app.post('/api/search', optionalAuth, async (req, res) => {
   try {
     const { make, model, city, purchasePrice } = req.body;
     if (!make || !model || !city) {
       return res.status(400).json({ error: 'make, model, and city are required' });
+    }
+
+    // Demo mode: serve curated data for unauthenticated users
+    if (!req.user && demoData) {
+      const searchKey = `${make} ${model}__${city}`;
+      const demoResult = serveDemoSearch(searchKey);
+      if (demoResult) {
+        // Artificial delay to feel realistic (300-800ms)
+        const delay = 300 + Math.random() * 500;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return res.json(demoResult);
+      }
     }
 
     const cityLabel = CITY_COORDS[city]?.label || city;
@@ -160,10 +218,23 @@ app.post('/api/search', async (req, res) => {
   }
 });
 
-app.post('/api/market-leaders', (req, res) => {
+app.post('/api/market-leaders', optionalAuth, (req, res) => {
   try {
     const { city } = req.body;
     if (!city) return res.status(400).json({ error: 'city is required' });
+
+    // Demo mode: serve curated market leaders for unauthenticated users
+    if (!req.user && demoData) {
+      const demoCity = demoData.marketLeaders[city] || demoData.marketLeaders[demoData.defaultLeadersCity];
+      if (demoCity) {
+        return res.json({
+          ...demoCity,
+          lastUpdated: new Date(Date.now() - 2 * 3600000).toISOString(),
+          scrapedAt: new Date(Date.now() - 2 * 3600000).toISOString(),
+          isDemo: true,
+        });
+      }
+    }
 
     const cached = getCachedData(city);
     if (!cached || !cached.vehicles || cached.vehicles.length === 0) {
@@ -187,6 +258,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   const cached = Object.keys(CITY_COORDS).filter(c => fs.existsSync(path.join(DATA_DIR, `${c}.json`)));
   console.log(`Cached data: ${cached.length}/${Object.keys(CITY_COORDS).length} cities`);
+  console.log(`Demo data: ${demoData ? 'loaded' : 'not available'}`);
 });
 
 export default app;

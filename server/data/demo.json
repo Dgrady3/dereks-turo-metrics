@@ -1,0 +1,359 @@
+{
+  "search": {
+    "Tesla Model 3__charlotte": {
+      "success": true,
+      "city": "Charlotte, NC",
+      "searchQuery": "Tesla Model 3",
+      "dataSource": "live",
+      "totalListings": 14,
+      "exactMatches": 14,
+      "similarMatches": 0,
+      "metrics": {
+        "roi": null,
+        "supplyDemand": {
+          "totalListings": 14,
+          "avgTripsPerListing": 38,
+          "score": 5.3
+        },
+        "revenuePerListing": {
+          "average": 856,
+          "median": 790,
+          "top25": 1120,
+          "bottom25": 520
+        },
+        "competitiveDensity": {
+          "totalListings": 14,
+          "avgDailyPrice": 85,
+          "medianDailyPrice": 82,
+          "priceRange": { "min": 55, "max": 130 },
+          "saturation": "MODERATE"
+        },
+        "verdict": {
+          "verdict": "BUY",
+          "score": 68,
+          "breakdown": {
+            "profit": { "points": 25, "max": 40, "detail": "$312/mo est. profit" },
+            "demand": { "points": 10, "max": 25, "detail": "38 avg lifetime trips" },
+            "competition": { "points": 8, "max": 20, "detail": "14 listings in area" },
+            "pricing": { "points": 9, "max": 15, "detail": "$85/day avg price" }
+          }
+        },
+        "avgMonthlyProfit": 312,
+        "costBreakdown": {
+          "avgDailyRate": 85,
+          "monthlyGrossRevenue": 856,
+          "turoFee": 214,
+          "turoFeePercent": 25,
+          "afterTuroFees": 642,
+          "insurance": 150,
+          "depreciation": 200,
+          "maintenance": 75,
+          "totalMonthlyCosts": 425,
+          "estimatedMonthlyProfit": 312
+        }
+      },
+      "rankedByVolume": [
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 89, "trips": 112, "monthlyTrips": 8.6, "rating": 4.95, "demandSignal": "hot", "demandReason": "112 trips — proven high demand", "monthlyGrossEst": 1230, "monthlyNetEst": 498, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 9968 },
+        { "title": "Tesla Model 3 2023", "year": 2023, "make": "Tesla", "model": "Model 3", "dailyPrice": 95, "trips": 87, "monthlyTrips": 7.2, "rating": 4.9, "demandSignal": "hot", "demandReason": "87 trips — proven high demand", "monthlyGrossEst": 1095, "monthlyNetEst": 396, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 8265 },
+        { "title": "Tesla Model 3 2021", "year": 2021, "make": "Tesla", "model": "Model 3", "dailyPrice": 75, "trips": 78, "monthlyTrips": 6.5, "rating": 4.85, "demandSignal": "hot", "demandReason": "78 trips — proven high demand", "monthlyGrossEst": 975, "monthlyNetEst": 306, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 5850 },
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 82, "trips": 65, "monthlyTrips": 5.4, "rating": 4.88, "demandSignal": "hot", "demandReason": "65 trips — strong demand", "monthlyGrossEst": 886, "monthlyNetEst": 240, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 5330 },
+        { "title": "Tesla Model 3 2023", "year": 2023, "make": "Tesla", "model": "Model 3", "dailyPrice": 92, "trips": 54, "monthlyTrips": 4.5, "rating": 4.92, "demandSignal": "hot", "demandReason": "54 trips — strong demand", "monthlyGrossEst": 828, "monthlyNetEst": 196, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 4968 },
+        { "title": "Tesla Model 3 2020", "year": 2020, "make": "Tesla", "model": "Model 3", "dailyPrice": 68, "trips": 48, "monthlyTrips": 4.0, "rating": 4.78, "demandSignal": "warm", "demandReason": "48 trips — moderate demand", "monthlyGrossEst": 725, "monthlyNetEst": 119, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3264 },
+        { "title": "Tesla Model 3 2024", "year": 2024, "make": "Tesla", "model": "Model 3", "dailyPrice": 105, "trips": 42, "monthlyTrips": 3.5, "rating": 5.0, "demandSignal": "warm", "demandReason": "42 trips — moderate demand", "monthlyGrossEst": 735, "monthlyNetEst": 126, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 4410 },
+        { "title": "Tesla Model 3 2021", "year": 2021, "make": "Tesla", "model": "Model 3", "dailyPrice": 72, "trips": 36, "monthlyTrips": 3.0, "rating": 4.72, "demandSignal": "warm", "demandReason": "36 trips — moderate demand", "monthlyGrossEst": 576, "monthlyNetEst": 7, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2592 },
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 88, "trips": 28, "monthlyTrips": 2.3, "rating": 4.82, "demandSignal": "warm", "demandReason": "28 trips — building traction", "monthlyGrossEst": 704, "monthlyNetEst": 103, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2464 },
+        { "title": "Tesla Model 3 2024", "year": 2024, "make": "Tesla", "model": "Model 3", "dailyPrice": 130, "trips": 15, "monthlyTrips": 1.3, "rating": 5.0, "demandSignal": "warm", "demandReason": "15 trips — newer listing", "monthlyGrossEst": 585, "monthlyNetEst": 14, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1950 }
+      ],
+      "rankedByProfit": [
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 89, "trips": 112, "monthlyTrips": 8.6, "rating": 4.95, "demandSignal": "hot", "demandReason": "112 trips — proven high demand", "monthlyGrossEst": 1230, "monthlyNetEst": 498, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 9968 },
+        { "title": "Tesla Model 3 2023", "year": 2023, "make": "Tesla", "model": "Model 3", "dailyPrice": 95, "trips": 87, "monthlyTrips": 7.2, "rating": 4.9, "demandSignal": "hot", "demandReason": "87 trips — proven high demand", "monthlyGrossEst": 1095, "monthlyNetEst": 396, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 8265 },
+        { "title": "Tesla Model 3 2021", "year": 2021, "make": "Tesla", "model": "Model 3", "dailyPrice": 75, "trips": 78, "monthlyTrips": 6.5, "rating": 4.85, "demandSignal": "hot", "demandReason": "78 trips — proven high demand", "monthlyGrossEst": 975, "monthlyNetEst": 306, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 5850 },
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 82, "trips": 65, "monthlyTrips": 5.4, "rating": 4.88, "demandSignal": "hot", "demandReason": "65 trips — strong demand", "monthlyGrossEst": 886, "monthlyNetEst": 240, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 5330 },
+        { "title": "Tesla Model 3 2023", "year": 2023, "make": "Tesla", "model": "Model 3", "dailyPrice": 92, "trips": 54, "monthlyTrips": 4.5, "rating": 4.92, "demandSignal": "hot", "demandReason": "54 trips — strong demand", "monthlyGrossEst": 828, "monthlyNetEst": 196, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 4968 },
+        { "title": "Tesla Model 3 2024", "year": 2024, "make": "Tesla", "model": "Model 3", "dailyPrice": 105, "trips": 42, "monthlyTrips": 3.5, "rating": 5.0, "demandSignal": "warm", "demandReason": "42 trips — moderate demand", "monthlyGrossEst": 735, "monthlyNetEst": 126, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 4410 },
+        { "title": "Tesla Model 3 2020", "year": 2020, "make": "Tesla", "model": "Model 3", "dailyPrice": 68, "trips": 48, "monthlyTrips": 4.0, "rating": 4.78, "demandSignal": "warm", "demandReason": "48 trips — moderate demand", "monthlyGrossEst": 725, "monthlyNetEst": 119, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3264 },
+        { "title": "Tesla Model 3 2022", "year": 2022, "make": "Tesla", "model": "Model 3", "dailyPrice": 88, "trips": 28, "monthlyTrips": 2.3, "rating": 4.82, "demandSignal": "warm", "demandReason": "28 trips — building traction", "monthlyGrossEst": 704, "monthlyNetEst": 103, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2464 },
+        { "title": "Tesla Model 3 2024", "year": 2024, "make": "Tesla", "model": "Model 3", "dailyPrice": 130, "trips": 15, "monthlyTrips": 1.3, "rating": 5.0, "demandSignal": "warm", "demandReason": "15 trips — newer listing", "monthlyGrossEst": 585, "monthlyNetEst": 14, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1950 },
+        { "title": "Tesla Model 3 2021", "year": 2021, "make": "Tesla", "model": "Model 3", "dailyPrice": 72, "trips": 36, "monthlyTrips": 3.0, "rating": 4.72, "demandSignal": "warm", "demandReason": "36 trips — moderate demand", "monthlyGrossEst": 576, "monthlyNetEst": 7, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2592 }
+      ],
+      "aiSummary": "**RECOMMENDATION: BUY.** The Tesla Model 3 in Charlotte shows strong market fundamentals with 14 active listings averaging $85/day and 38 lifetime trips per vehicle. Top performers are clearing $400-500/mo net profit after all costs, with the best 2022 Model 3 pulling 112 trips at $89/day. Competition is moderate — not oversaturated — and demand signals are overwhelmingly hot. Sweet spot appears to be 2021-2022 model years priced $75-90/day, where you get proven demand without premium pricing risk. If you can acquire a Model 3 under $28K, expect positive ROI within 18-24 months with Turo as your primary rental channel."
+    },
+    "Toyota 4Runner__charlotte": {
+      "success": true,
+      "city": "Charlotte, NC",
+      "searchQuery": "Toyota 4Runner",
+      "dataSource": "live",
+      "totalListings": 6,
+      "exactMatches": 6,
+      "similarMatches": 0,
+      "metrics": {
+        "roi": null,
+        "supplyDemand": {
+          "totalListings": 6,
+          "avgTripsPerListing": 52,
+          "score": 7.5
+        },
+        "revenuePerListing": {
+          "average": 1150,
+          "median": 1080,
+          "top25": 1420,
+          "bottom25": 780
+        },
+        "competitiveDensity": {
+          "totalListings": 6,
+          "avgDailyPrice": 105,
+          "medianDailyPrice": 100,
+          "priceRange": { "min": 78, "max": 145 },
+          "saturation": "LOW"
+        },
+        "verdict": {
+          "verdict": "BUY",
+          "score": 74,
+          "breakdown": {
+            "profit": { "points": 30, "max": 40, "detail": "$438/mo est. profit" },
+            "demand": { "points": 13, "max": 25, "detail": "52 avg lifetime trips" },
+            "competition": { "points": 15, "max": 20, "detail": "6 listings in area" },
+            "pricing": { "points": 13, "max": 15, "detail": "$105/day avg price" }
+          }
+        },
+        "avgMonthlyProfit": 438,
+        "costBreakdown": {
+          "avgDailyRate": 105,
+          "monthlyGrossRevenue": 1150,
+          "turoFee": 288,
+          "turoFeePercent": 25,
+          "afterTuroFees": 862,
+          "insurance": 150,
+          "depreciation": 200,
+          "maintenance": 75,
+          "totalMonthlyCosts": 425,
+          "estimatedMonthlyProfit": 438
+        }
+      },
+      "rankedByVolume": [
+        { "title": "Toyota 4Runner 2021 TRD Off-Road", "year": 2021, "make": "Toyota", "model": "4Runner", "dailyPrice": 110, "trips": 98, "monthlyTrips": 7.5, "rating": 4.96, "demandSignal": "hot", "demandReason": "98 trips — proven high demand", "monthlyGrossEst": 1430, "monthlyNetEst": 648, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 10780 },
+        { "title": "Toyota 4Runner 2022 SR5", "year": 2022, "make": "Toyota", "model": "4Runner", "dailyPrice": 100, "trips": 72, "monthlyTrips": 6.0, "rating": 4.88, "demandSignal": "hot", "demandReason": "72 trips — proven demand", "monthlyGrossEst": 1200, "monthlyNetEst": 475, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 7200 },
+        { "title": "Toyota 4Runner 2020 TRD Pro", "year": 2020, "make": "Toyota", "model": "4Runner", "dailyPrice": 120, "trips": 65, "monthlyTrips": 5.4, "rating": 4.92, "demandSignal": "hot", "demandReason": "65 trips — strong demand", "monthlyGrossEst": 1300, "monthlyNetEst": 550, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 7800 },
+        { "title": "Toyota 4Runner 2023 SR5", "year": 2023, "make": "Toyota", "model": "4Runner", "dailyPrice": 95, "trips": 41, "monthlyTrips": 3.4, "rating": 4.85, "demandSignal": "warm", "demandReason": "41 trips — moderate demand", "monthlyGrossEst": 855, "monthlyNetEst": 216, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3895 },
+        { "title": "Toyota 4Runner 2019 Limited", "year": 2019, "make": "Toyota", "model": "4Runner", "dailyPrice": 78, "trips": 22, "monthlyTrips": 1.8, "rating": 4.7, "demandSignal": "warm", "demandReason": "22 trips — building traction", "monthlyGrossEst": 624, "monthlyNetEst": 43, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1716 },
+        { "title": "Toyota 4Runner 2024 TRD Off-Road", "year": 2024, "make": "Toyota", "model": "4Runner", "dailyPrice": 145, "trips": 14, "monthlyTrips": 1.2, "rating": 5.0, "demandSignal": "warm", "demandReason": "14 trips — newer listing", "monthlyGrossEst": 870, "monthlyNetEst": 228, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2030 }
+      ],
+      "rankedByProfit": [
+        { "title": "Toyota 4Runner 2021 TRD Off-Road", "year": 2021, "make": "Toyota", "model": "4Runner", "dailyPrice": 110, "trips": 98, "monthlyTrips": 7.5, "rating": 4.96, "demandSignal": "hot", "demandReason": "98 trips — proven high demand", "monthlyGrossEst": 1430, "monthlyNetEst": 648, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 10780 },
+        { "title": "Toyota 4Runner 2020 TRD Pro", "year": 2020, "make": "Toyota", "model": "4Runner", "dailyPrice": 120, "trips": 65, "monthlyTrips": 5.4, "rating": 4.92, "demandSignal": "hot", "demandReason": "65 trips — strong demand", "monthlyGrossEst": 1300, "monthlyNetEst": 550, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 7800 },
+        { "title": "Toyota 4Runner 2022 SR5", "year": 2022, "make": "Toyota", "model": "4Runner", "dailyPrice": 100, "trips": 72, "monthlyTrips": 6.0, "rating": 4.88, "demandSignal": "hot", "demandReason": "72 trips — proven demand", "monthlyGrossEst": 1200, "monthlyNetEst": 475, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 7200 },
+        { "title": "Toyota 4Runner 2024 TRD Off-Road", "year": 2024, "make": "Toyota", "model": "4Runner", "dailyPrice": 145, "trips": 14, "monthlyTrips": 1.2, "rating": 5.0, "demandSignal": "warm", "demandReason": "14 trips — newer listing", "monthlyGrossEst": 870, "monthlyNetEst": 228, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2030 },
+        { "title": "Toyota 4Runner 2023 SR5", "year": 2023, "make": "Toyota", "model": "4Runner", "dailyPrice": 95, "trips": 41, "monthlyTrips": 3.4, "rating": 4.85, "demandSignal": "warm", "demandReason": "41 trips — moderate demand", "monthlyGrossEst": 855, "monthlyNetEst": 216, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3895 },
+        { "title": "Toyota 4Runner 2019 Limited", "year": 2019, "make": "Toyota", "model": "4Runner", "dailyPrice": 78, "trips": 22, "monthlyTrips": 1.8, "rating": 4.7, "demandSignal": "warm", "demandReason": "22 trips — building traction", "monthlyGrossEst": 624, "monthlyNetEst": 43, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1716 }
+      ],
+      "aiSummary": "**RECOMMENDATION: BUY.** The Toyota 4Runner is a standout opportunity in Charlotte with only 6 listings and exceptional demand — 52 avg lifetime trips per vehicle. The TRD Off-Road and TRD Pro trims command $110-120/day and top earners are netting $550-650/mo profit. Low competition means pricing power stays strong, and Toyota's bulletproof reliability keeps maintenance costs predictable. The 2020-2022 sweet spot offers the best value: proven demand, strong daily rates, and lower acquisition cost than newer models. This is one of the strongest SUV plays in the NC market right now."
+    },
+    "Jeep Wrangler__raleigh": {
+      "success": true,
+      "city": "Raleigh, NC",
+      "searchQuery": "Jeep Wrangler",
+      "dataSource": "live",
+      "totalListings": 22,
+      "exactMatches": 22,
+      "similarMatches": 0,
+      "metrics": {
+        "roi": null,
+        "supplyDemand": {
+          "totalListings": 22,
+          "avgTripsPerListing": 31,
+          "score": 4.3
+        },
+        "revenuePerListing": {
+          "average": 720,
+          "median": 680,
+          "top25": 950,
+          "bottom25": 420
+        },
+        "competitiveDensity": {
+          "totalListings": 22,
+          "avgDailyPrice": 95,
+          "medianDailyPrice": 90,
+          "priceRange": { "min": 58, "max": 165 },
+          "saturation": "HIGH"
+        },
+        "verdict": {
+          "verdict": "MAYBE",
+          "score": 48,
+          "breakdown": {
+            "profit": { "points": 10, "max": 40, "detail": "$115/mo est. profit" },
+            "demand": { "points": 8, "max": 25, "detail": "31 avg lifetime trips" },
+            "competition": { "points": 3, "max": 20, "detail": "22 listings in area" },
+            "pricing": { "points": 11, "max": 15, "detail": "$95/day avg price" }
+          }
+        },
+        "avgMonthlyProfit": 115,
+        "costBreakdown": {
+          "avgDailyRate": 95,
+          "monthlyGrossRevenue": 720,
+          "turoFee": 180,
+          "turoFeePercent": 25,
+          "afterTuroFees": 540,
+          "insurance": 150,
+          "depreciation": 200,
+          "maintenance": 75,
+          "totalMonthlyCosts": 425,
+          "estimatedMonthlyProfit": 115
+        }
+      },
+      "rankedByVolume": [
+        { "title": "Jeep Wrangler 2021 Sahara", "year": 2021, "make": "Jeep", "model": "Wrangler", "dailyPrice": 98, "trips": 89, "monthlyTrips": 6.8, "rating": 4.91, "demandSignal": "hot", "demandReason": "89 trips — proven high demand", "monthlyGrossEst": 1280, "monthlyNetEst": 535, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 8722 },
+        { "title": "Jeep Wrangler 2020 Sport", "year": 2020, "make": "Jeep", "model": "Wrangler", "dailyPrice": 75, "trips": 76, "monthlyTrips": 6.3, "rating": 4.82, "demandSignal": "hot", "demandReason": "76 trips — proven demand", "monthlyGrossEst": 950, "monthlyNetEst": 288, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 5700 },
+        { "title": "Jeep Wrangler 2022 Rubicon", "year": 2022, "make": "Jeep", "model": "Wrangler", "dailyPrice": 135, "trips": 62, "monthlyTrips": 5.2, "rating": 4.94, "demandSignal": "hot", "demandReason": "62 trips — strong demand", "monthlyGrossEst": 1350, "monthlyNetEst": 588, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 8370 },
+        { "title": "Jeep Wrangler 2019 Sahara", "year": 2019, "make": "Jeep", "model": "Wrangler", "dailyPrice": 85, "trips": 55, "monthlyTrips": 4.6, "rating": 4.75, "demandSignal": "hot", "demandReason": "55 trips — strong demand", "monthlyGrossEst": 850, "monthlyNetEst": 213, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 4675 },
+        { "title": "Jeep Wrangler 2023 Sport S", "year": 2023, "make": "Jeep", "model": "Wrangler", "dailyPrice": 90, "trips": 38, "monthlyTrips": 3.2, "rating": 4.88, "demandSignal": "warm", "demandReason": "38 trips — moderate demand", "monthlyGrossEst": 760, "monthlyNetEst": 145, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 3420 },
+        { "title": "Jeep Wrangler 2020 Willys", "year": 2020, "make": "Jeep", "model": "Wrangler", "dailyPrice": 80, "trips": 32, "monthlyTrips": 2.7, "rating": 4.68, "demandSignal": "warm", "demandReason": "32 trips — moderate demand", "monthlyGrossEst": 640, "monthlyNetEst": 55, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 2560 },
+        { "title": "Jeep Wrangler 2021 Sport", "year": 2021, "make": "Jeep", "model": "Wrangler", "dailyPrice": 82, "trips": 28, "monthlyTrips": 2.3, "rating": 4.72, "demandSignal": "warm", "demandReason": "28 trips — building traction", "monthlyGrossEst": 615, "monthlyNetEst": 36, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 2296 },
+        { "title": "Jeep Wrangler 2018 Unlimited", "year": 2018, "make": "Jeep", "model": "Wrangler", "dailyPrice": 65, "trips": 18, "monthlyTrips": 1.5, "rating": 4.55, "demandSignal": "warm", "demandReason": "18 trips — building traction", "monthlyGrossEst": 390, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 1170 },
+        { "title": "Jeep Wrangler 2024 Sahara", "year": 2024, "make": "Jeep", "model": "Wrangler", "dailyPrice": 165, "trips": 8, "monthlyTrips": 0.7, "rating": 5.0, "demandSignal": "warm", "demandReason": "8 trips — new listing with bookings", "monthlyGrossEst": 660, "monthlyNetEst": 70, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": true, "grossRevenue": 1320 },
+        { "title": "Jeep Wrangler 2019 Sport", "year": 2019, "make": "Jeep", "model": "Wrangler", "dailyPrice": 58, "trips": 12, "monthlyTrips": 1.0, "rating": 4.45, "demandSignal": "warm", "demandReason": "12 trips — building traction", "monthlyGrossEst": 348, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 696 }
+      ],
+      "rankedByProfit": [
+        { "title": "Jeep Wrangler 2022 Rubicon", "year": 2022, "make": "Jeep", "model": "Wrangler", "dailyPrice": 135, "trips": 62, "monthlyTrips": 5.2, "rating": 4.94, "demandSignal": "hot", "demandReason": "62 trips — strong demand", "monthlyGrossEst": 1350, "monthlyNetEst": 588, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 8370 },
+        { "title": "Jeep Wrangler 2021 Sahara", "year": 2021, "make": "Jeep", "model": "Wrangler", "dailyPrice": 98, "trips": 89, "monthlyTrips": 6.8, "rating": 4.91, "demandSignal": "hot", "demandReason": "89 trips — proven high demand", "monthlyGrossEst": 1280, "monthlyNetEst": 535, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 8722 },
+        { "title": "Jeep Wrangler 2020 Sport", "year": 2020, "make": "Jeep", "model": "Wrangler", "dailyPrice": 75, "trips": 76, "monthlyTrips": 6.3, "rating": 4.82, "demandSignal": "hot", "demandReason": "76 trips — proven demand", "monthlyGrossEst": 950, "monthlyNetEst": 288, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 5700 },
+        { "title": "Jeep Wrangler 2019 Sahara", "year": 2019, "make": "Jeep", "model": "Wrangler", "dailyPrice": 85, "trips": 55, "monthlyTrips": 4.6, "rating": 4.75, "demandSignal": "hot", "demandReason": "55 trips — strong demand", "monthlyGrossEst": 850, "monthlyNetEst": 213, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 4675 },
+        { "title": "Jeep Wrangler 2023 Sport S", "year": 2023, "make": "Jeep", "model": "Wrangler", "dailyPrice": 90, "trips": 38, "monthlyTrips": 3.2, "rating": 4.88, "demandSignal": "warm", "demandReason": "38 trips — moderate demand", "monthlyGrossEst": 760, "monthlyNetEst": 145, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 3420 },
+        { "title": "Jeep Wrangler 2024 Sahara", "year": 2024, "make": "Jeep", "model": "Wrangler", "dailyPrice": 165, "trips": 8, "monthlyTrips": 0.7, "rating": 5.0, "demandSignal": "warm", "demandReason": "8 trips — new listing with bookings", "monthlyGrossEst": 660, "monthlyNetEst": 70, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": true, "grossRevenue": 1320 },
+        { "title": "Jeep Wrangler 2020 Willys", "year": 2020, "make": "Jeep", "model": "Wrangler", "dailyPrice": 80, "trips": 32, "monthlyTrips": 2.7, "rating": 4.68, "demandSignal": "warm", "demandReason": "32 trips — moderate demand", "monthlyGrossEst": 640, "monthlyNetEst": 55, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 2560 },
+        { "title": "Jeep Wrangler 2021 Sport", "year": 2021, "make": "Jeep", "model": "Wrangler", "dailyPrice": 82, "trips": 28, "monthlyTrips": 2.3, "rating": 4.72, "demandSignal": "warm", "demandReason": "28 trips — building traction", "monthlyGrossEst": 615, "monthlyNetEst": 36, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 2296 },
+        { "title": "Jeep Wrangler 2018 Unlimited", "year": 2018, "make": "Jeep", "model": "Wrangler", "dailyPrice": 65, "trips": 18, "monthlyTrips": 1.5, "rating": 4.55, "demandSignal": "warm", "demandReason": "18 trips — building traction", "monthlyGrossEst": 390, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 1170 },
+        { "title": "Jeep Wrangler 2019 Sport", "year": 2019, "make": "Jeep", "model": "Wrangler", "dailyPrice": 58, "trips": 12, "monthlyTrips": 1.0, "rating": 4.45, "demandSignal": "warm", "demandReason": "12 trips — building traction", "monthlyGrossEst": 348, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "raleigh-nc", "isNewListing": false, "grossRevenue": 696 }
+      ],
+      "aiSummary": "**RECOMMENDATION: MAYBE.** The Jeep Wrangler in Raleigh is a crowded space — 22 active listings create real competition and compress margins. Average profit is only $115/mo, meaning most hosts are barely covering costs. However, the Rubicon and Sahara trims tell a different story: premium models at $98-135/day are pulling $500+/mo profit because they attract a specific adventure-seeking renter willing to pay more. If you go Wrangler, go premium (Rubicon or Sahara) and price at $95+/day. Avoid base Sport trims under $75/day — they're a race to the bottom in this saturated market."
+    },
+    "Ford Bronco__charlotte": {
+      "success": true,
+      "city": "Charlotte, NC",
+      "searchQuery": "Ford Bronco",
+      "dataSource": "live",
+      "totalListings": 4,
+      "exactMatches": 4,
+      "similarMatches": 0,
+      "metrics": {
+        "roi": null,
+        "supplyDemand": {
+          "totalListings": 4,
+          "avgTripsPerListing": 18,
+          "score": 5.5
+        },
+        "revenuePerListing": {
+          "average": 680,
+          "median": 650,
+          "top25": 890,
+          "bottom25": 480
+        },
+        "competitiveDensity": {
+          "totalListings": 4,
+          "avgDailyPrice": 115,
+          "medianDailyPrice": 110,
+          "priceRange": { "min": 88, "max": 155 },
+          "saturation": "LOW"
+        },
+        "verdict": {
+          "verdict": "PASS",
+          "score": 38,
+          "breakdown": {
+            "profit": { "points": 5, "max": 40, "detail": "$85/mo est. profit" },
+            "demand": { "points": 5, "max": 25, "detail": "18 avg lifetime trips" },
+            "competition": { "points": 15, "max": 20, "detail": "4 listings in area" },
+            "pricing": { "points": 14, "max": 15, "detail": "$115/day avg price" }
+          }
+        },
+        "avgMonthlyProfit": 85,
+        "costBreakdown": {
+          "avgDailyRate": 115,
+          "monthlyGrossRevenue": 680,
+          "turoFee": 170,
+          "turoFeePercent": 25,
+          "afterTuroFees": 510,
+          "insurance": 150,
+          "depreciation": 200,
+          "maintenance": 75,
+          "totalMonthlyCosts": 425,
+          "estimatedMonthlyProfit": 85
+        }
+      },
+      "rankedByVolume": [
+        { "title": "Ford Bronco 2022 Big Bend", "year": 2022, "make": "Ford", "model": "Bronco", "dailyPrice": 105, "trips": 34, "monthlyTrips": 2.8, "rating": 4.88, "demandSignal": "warm", "demandReason": "34 trips — moderate demand", "monthlyGrossEst": 890, "monthlyNetEst": 243, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3570 },
+        { "title": "Ford Bronco 2023 Outer Banks", "year": 2023, "make": "Ford", "model": "Bronco", "dailyPrice": 115, "trips": 22, "monthlyTrips": 1.8, "rating": 4.92, "demandSignal": "warm", "demandReason": "22 trips — building traction", "monthlyGrossEst": 690, "monthlyNetEst": 93, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2530 },
+        { "title": "Ford Bronco 2021 Wildtrak", "year": 2021, "make": "Ford", "model": "Bronco", "dailyPrice": 88, "trips": 12, "monthlyTrips": 1.0, "rating": 4.65, "demandSignal": "warm", "demandReason": "12 trips — building traction", "monthlyGrossEst": 528, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1056 },
+        { "title": "Ford Bronco 2024 Badlands", "year": 2024, "make": "Ford", "model": "Bronco", "dailyPrice": 155, "trips": 5, "monthlyTrips": 0.4, "rating": 5.0, "demandSignal": "warm", "demandReason": "5 trips — new listing with bookings", "monthlyGrossEst": 620, "monthlyNetEst": 40, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": true, "grossRevenue": 775 }
+      ],
+      "rankedByProfit": [
+        { "title": "Ford Bronco 2022 Big Bend", "year": 2022, "make": "Ford", "model": "Bronco", "dailyPrice": 105, "trips": 34, "monthlyTrips": 2.8, "rating": 4.88, "demandSignal": "warm", "demandReason": "34 trips — moderate demand", "monthlyGrossEst": 890, "monthlyNetEst": 243, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 3570 },
+        { "title": "Ford Bronco 2023 Outer Banks", "year": 2023, "make": "Ford", "model": "Bronco", "dailyPrice": 115, "trips": 22, "monthlyTrips": 1.8, "rating": 4.92, "demandSignal": "warm", "demandReason": "22 trips — building traction", "monthlyGrossEst": 690, "monthlyNetEst": 93, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 2530 },
+        { "title": "Ford Bronco 2024 Badlands", "year": 2024, "make": "Ford", "model": "Bronco", "dailyPrice": 155, "trips": 5, "monthlyTrips": 0.4, "rating": 5.0, "demandSignal": "warm", "demandReason": "5 trips — new listing with bookings", "monthlyGrossEst": 620, "monthlyNetEst": 40, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": true, "grossRevenue": 775 },
+        { "title": "Ford Bronco 2021 Wildtrak", "year": 2021, "make": "Ford", "model": "Bronco", "dailyPrice": 88, "trips": 12, "monthlyTrips": 1.0, "rating": 4.65, "demandSignal": "warm", "demandReason": "12 trips — building traction", "monthlyGrossEst": 528, "monthlyNetEst": 0, "vehicleId": null, "locationSlug": "charlotte-nc", "isNewListing": false, "grossRevenue": 1056 }
+      ],
+      "aiSummary": "**RECOMMENDATION: PASS.** The Ford Bronco looks exciting on paper — $115/day average and only 4 listings sounds like low competition. But dig into the numbers: only 18 avg trips per vehicle and $85/mo average profit tells the real story. These are still relatively new to the market and haven't proven sustained rental demand yet. The 2022 Big Bend is the only one showing decent traction with 34 trips. High acquisition cost ($35K+) combined with Ford's premium maintenance costs make the math tough. Wait 6-12 months for more demand data before committing — the Bronco could be a future BUY, but it's too early to call."
+    }
+  },
+  "marketLeaders": {
+    "charlotte": {
+      "success": true,
+      "city": "Charlotte, NC",
+      "totalVehicles": 847,
+      "totalModels": 62,
+      "categories": {
+        "bestProfit": [
+          { "make": "Toyota", "model": "4Runner", "count": 6, "avgDailyPrice": 105, "avgTrips": 52, "avgMonthlyTrips": 4.3, "avgRating": 4.87, "estimatedMonthly": 438, "profitScore": 392, "demandSignal": "hot", "demandReason": "52 avg trips across 6 listings (312 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Tesla", "model": "Model 3", "count": 14, "avgDailyPrice": 85, "avgTrips": 38, "avgMonthlyTrips": 3.2, "avgRating": 4.88, "estimatedMonthly": 312, "profitScore": 285, "demandSignal": "hot", "demandReason": "38 avg trips across 14 listings (532 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "BMW", "model": "3 Series", "count": 8, "avgDailyPrice": 92, "avgTrips": 42, "avgMonthlyTrips": 3.5, "avgRating": 4.82, "estimatedMonthly": 345, "profitScore": 298, "demandSignal": "hot", "demandReason": "42 avg trips across 8 listings (336 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "Camry", "count": 18, "avgDailyPrice": 48, "avgTrips": 55, "avgMonthlyTrips": 4.6, "avgRating": 4.78, "estimatedMonthly": 195, "profitScore": 182, "demandSignal": "hot", "demandReason": "55 avg trips across 18 listings (990 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Chevrolet", "model": "Corvette", "count": 3, "avgDailyPrice": 185, "avgTrips": 28, "avgMonthlyTrips": 2.3, "avgRating": 4.95, "estimatedMonthly": 520, "profitScore": 380, "demandSignal": "warm", "demandReason": "28 avg trips across 3 listings (84 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Tesla", "model": "Model Y", "count": 11, "avgDailyPrice": 78, "avgTrips": 35, "avgMonthlyTrips": 2.9, "avgRating": 4.85, "estimatedMonthly": 268, "profitScore": 235, "demandSignal": "warm", "demandReason": "35 avg trips across 11 listings (385 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Mercedes-Benz", "model": "C-Class", "count": 5, "avgDailyPrice": 98, "avgTrips": 30, "avgMonthlyTrips": 2.5, "avgRating": 4.79, "estimatedMonthly": 310, "profitScore": 255, "demandSignal": "warm", "demandReason": "30 avg trips across 5 listings (150 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Honda", "model": "Civic", "count": 15, "avgDailyPrice": 42, "avgTrips": 48, "avgMonthlyTrips": 4.0, "avgRating": 4.72, "estimatedMonthly": 165, "profitScore": 155, "demandSignal": "hot", "demandReason": "48 avg trips across 15 listings (720 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Ford", "model": "Mustang", "count": 9, "avgDailyPrice": 88, "avgTrips": 32, "avgMonthlyTrips": 2.7, "avgRating": 4.80, "estimatedMonthly": 285, "profitScore": 245, "demandSignal": "warm", "demandReason": "32 avg trips across 9 listings (288 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Jeep", "model": "Grand Cherokee", "count": 7, "avgDailyPrice": 82, "avgTrips": 25, "avgMonthlyTrips": 2.1, "avgRating": 4.68, "estimatedMonthly": 210, "profitScore": 168, "demandSignal": "warm", "demandReason": "25 avg trips across 7 listings (175 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" }
+        ],
+        "bestVolume": [
+          { "make": "Toyota", "model": "Camry", "count": 18, "avgDailyPrice": 48, "avgTrips": 55, "avgMonthlyTrips": 4.6, "avgRating": 4.78, "estimatedMonthly": 195, "profitScore": 182, "demandSignal": "hot", "demandReason": "55 avg trips across 18 listings (990 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "4Runner", "count": 6, "avgDailyPrice": 105, "avgTrips": 52, "avgMonthlyTrips": 4.3, "avgRating": 4.87, "estimatedMonthly": 438, "profitScore": 392, "demandSignal": "hot", "demandReason": "52 avg trips across 6 listings (312 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Honda", "model": "Civic", "count": 15, "avgDailyPrice": 42, "avgTrips": 48, "avgMonthlyTrips": 4.0, "avgRating": 4.72, "estimatedMonthly": 165, "profitScore": 155, "demandSignal": "hot", "demandReason": "48 avg trips across 15 listings (720 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "BMW", "model": "3 Series", "count": 8, "avgDailyPrice": 92, "avgTrips": 42, "avgMonthlyTrips": 3.5, "avgRating": 4.82, "estimatedMonthly": 345, "profitScore": 298, "demandSignal": "hot", "demandReason": "42 avg trips across 8 listings (336 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Nissan", "model": "Altima", "count": 12, "avgDailyPrice": 38, "avgTrips": 40, "avgMonthlyTrips": 3.3, "avgRating": 4.58, "estimatedMonthly": 85, "profitScore": 72, "demandSignal": "warm", "demandReason": "40 avg trips across 12 listings (480 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Tesla", "model": "Model 3", "count": 14, "avgDailyPrice": 85, "avgTrips": 38, "avgMonthlyTrips": 3.2, "avgRating": 4.88, "estimatedMonthly": 312, "profitScore": 285, "demandSignal": "hot", "demandReason": "38 avg trips across 14 listings (532 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "Corolla", "count": 10, "avgDailyPrice": 35, "avgTrips": 36, "avgMonthlyTrips": 3.0, "avgRating": 4.65, "estimatedMonthly": 58, "profitScore": 48, "demandSignal": "warm", "demandReason": "36 avg trips across 10 listings (360 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Tesla", "model": "Model Y", "count": 11, "avgDailyPrice": 78, "avgTrips": 35, "avgMonthlyTrips": 2.9, "avgRating": 4.85, "estimatedMonthly": 268, "profitScore": 235, "demandSignal": "warm", "demandReason": "35 avg trips across 11 listings (385 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Ford", "model": "Mustang", "count": 9, "avgDailyPrice": 88, "avgTrips": 32, "avgMonthlyTrips": 2.7, "avgRating": 4.80, "estimatedMonthly": 285, "profitScore": 245, "demandSignal": "warm", "demandReason": "32 avg trips across 9 listings (288 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Mercedes-Benz", "model": "C-Class", "count": 5, "avgDailyPrice": 98, "avgTrips": 30, "avgMonthlyTrips": 2.5, "avgRating": 4.79, "estimatedMonthly": 310, "profitScore": 255, "demandSignal": "warm", "demandReason": "30 avg trips across 5 listings (150 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" }
+        ],
+        "bestBudget": [
+          { "make": "Toyota", "model": "Corolla", "count": 10, "avgDailyPrice": 35, "avgTrips": 36, "avgMonthlyTrips": 3.0, "avgRating": 4.65, "estimatedMonthly": 58, "profitScore": 48, "demandSignal": "warm", "demandReason": "36 avg trips across 10 listings (360 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Nissan", "model": "Altima", "count": 12, "avgDailyPrice": 38, "avgTrips": 40, "avgMonthlyTrips": 3.3, "avgRating": 4.58, "estimatedMonthly": 85, "profitScore": 72, "demandSignal": "warm", "demandReason": "40 avg trips across 12 listings (480 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Honda", "model": "Civic", "count": 15, "avgDailyPrice": 42, "avgTrips": 48, "avgMonthlyTrips": 4.0, "avgRating": 4.72, "estimatedMonthly": 165, "profitScore": 155, "demandSignal": "hot", "demandReason": "48 avg trips across 15 listings (720 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "Camry", "count": 18, "avgDailyPrice": 48, "avgTrips": 55, "avgMonthlyTrips": 4.6, "avgRating": 4.78, "estimatedMonthly": 195, "profitScore": 182, "demandSignal": "hot", "demandReason": "55 avg trips across 18 listings (990 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Hyundai", "model": "Elantra", "count": 8, "avgDailyPrice": 34, "avgTrips": 28, "avgMonthlyTrips": 2.3, "avgRating": 4.52, "estimatedMonthly": 32, "profitScore": 25, "demandSignal": "warm", "demandReason": "28 avg trips across 8 listings (224 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Kia", "model": "Forte", "count": 6, "avgDailyPrice": 32, "avgTrips": 22, "avgMonthlyTrips": 1.8, "avgRating": 4.48, "estimatedMonthly": 15, "profitScore": 10, "demandSignal": "warm", "demandReason": "22 avg trips across 6 listings (132 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" }
+        ],
+        "bestPremium": [
+          { "make": "Chevrolet", "model": "Corvette", "count": 3, "avgDailyPrice": 185, "avgTrips": 28, "avgMonthlyTrips": 2.3, "avgRating": 4.95, "estimatedMonthly": 520, "profitScore": 380, "demandSignal": "warm", "demandReason": "28 avg trips across 3 listings (84 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Porsche", "model": "911", "count": 2, "avgDailyPrice": 250, "avgTrips": 18, "avgMonthlyTrips": 1.5, "avgRating": 5.0, "estimatedMonthly": 680, "profitScore": 420, "demandSignal": "warm", "demandReason": "18 avg trips across 2 listings (36 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Mercedes-Benz", "model": "GLE", "count": 4, "avgDailyPrice": 135, "avgTrips": 22, "avgMonthlyTrips": 1.8, "avgRating": 4.85, "estimatedMonthly": 395, "profitScore": 305, "demandSignal": "warm", "demandReason": "22 avg trips across 4 listings (88 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "BMW", "model": "X5", "count": 5, "avgDailyPrice": 120, "avgTrips": 25, "avgMonthlyTrips": 2.1, "avgRating": 4.82, "estimatedMonthly": 355, "profitScore": 285, "demandSignal": "warm", "demandReason": "25 avg trips across 5 listings (125 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "4Runner", "count": 6, "avgDailyPrice": 105, "avgTrips": 52, "avgMonthlyTrips": 4.3, "avgRating": 4.87, "estimatedMonthly": 438, "profitScore": 392, "demandSignal": "hot", "demandReason": "52 avg trips across 6 listings (312 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" }
+        ],
+        "leastCompetition": [
+          { "make": "Porsche", "model": "911", "count": 2, "avgDailyPrice": 250, "avgTrips": 18, "avgMonthlyTrips": 1.5, "avgRating": 5.0, "estimatedMonthly": 680, "profitScore": 420, "demandSignal": "warm", "demandReason": "18 avg trips across 2 listings (36 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Chevrolet", "model": "Corvette", "count": 3, "avgDailyPrice": 185, "avgTrips": 28, "avgMonthlyTrips": 2.3, "avgRating": 4.95, "estimatedMonthly": 520, "profitScore": 380, "demandSignal": "warm", "demandReason": "28 avg trips across 3 listings (84 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Ford", "model": "Bronco", "count": 4, "avgDailyPrice": 115, "avgTrips": 18, "avgMonthlyTrips": 1.5, "avgRating": 4.86, "estimatedMonthly": 85, "profitScore": 62, "demandSignal": "warm", "demandReason": "18 avg trips across 4 listings (72 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Mercedes-Benz", "model": "GLE", "count": 4, "avgDailyPrice": 135, "avgTrips": 22, "avgMonthlyTrips": 1.8, "avgRating": 4.85, "estimatedMonthly": 395, "profitScore": 305, "demandSignal": "warm", "demandReason": "22 avg trips across 4 listings (88 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Mercedes-Benz", "model": "C-Class", "count": 5, "avgDailyPrice": 98, "avgTrips": 30, "avgMonthlyTrips": 2.5, "avgRating": 4.79, "estimatedMonthly": 310, "profitScore": 255, "demandSignal": "warm", "demandReason": "30 avg trips across 5 listings (150 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "BMW", "model": "X5", "count": 5, "avgDailyPrice": 120, "avgTrips": 25, "avgMonthlyTrips": 2.1, "avgRating": 4.82, "estimatedMonthly": 355, "profitScore": 285, "demandSignal": "warm", "demandReason": "25 avg trips across 5 listings (125 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Toyota", "model": "4Runner", "count": 6, "avgDailyPrice": 105, "avgTrips": 52, "avgMonthlyTrips": 4.3, "avgRating": 4.87, "estimatedMonthly": 438, "profitScore": 392, "demandSignal": "hot", "demandReason": "52 avg trips across 6 listings (312 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Kia", "model": "Forte", "count": 6, "avgDailyPrice": 32, "avgTrips": 22, "avgMonthlyTrips": 1.8, "avgRating": 4.48, "estimatedMonthly": 15, "profitScore": 10, "demandSignal": "warm", "demandReason": "22 avg trips across 6 listings (132 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "Jeep", "model": "Grand Cherokee", "count": 7, "avgDailyPrice": 82, "avgTrips": 25, "avgMonthlyTrips": 2.1, "avgRating": 4.68, "estimatedMonthly": 210, "profitScore": 168, "demandSignal": "warm", "demandReason": "25 avg trips across 7 listings (175 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" },
+          { "make": "BMW", "model": "3 Series", "count": 8, "avgDailyPrice": 92, "avgTrips": 42, "avgMonthlyTrips": 3.5, "avgRating": 4.82, "estimatedMonthly": 345, "profitScore": 298, "demandSignal": "hot", "demandReason": "42 avg trips across 8 listings (336 total)", "sampleVehicleId": null, "sampleLocationSlug": "charlotte-nc" }
+        ]
+      }
+    }
+  },
+  "defaultSearch": "Tesla Model 3__charlotte",
+  "defaultLeadersCity": "charlotte"
+}

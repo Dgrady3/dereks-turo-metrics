@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { API_BASE } from '../api';
+import { API_BASE, authHeaders } from '../api';
 import { NC_CITIES } from '../data/cars';
 import LoadingState from './LoadingState';
 
@@ -34,7 +34,7 @@ export default function MarketLeaders({ onVehicleSearch }) {
     try {
       const res = await fetch(`${API_BASE}/api/market-leaders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ city }),
       });
       const result = await res.json();

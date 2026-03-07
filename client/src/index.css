@@ -168,29 +168,22 @@ body::before {
   }
 
 
-  /* Header mobile: Derek's / Titsy / TURO / Metrics stacked */
+  /* Header mobile: Derek's / TURO Metrics stacked */
   .app-header-title {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     gap: 0 !important;
   }
-  .header-center {
-    display: contents !important;
-  }
   .header-dereks {
     order: 1 !important;
     margin-bottom: 4px !important;
   }
-  .header-titsy {
-    order: 2 !important;
-    text-align: center !important;
-  }
   .header-turo {
-    order: 3 !important;
+    order: 2 !important;
   }
   .header-metrics {
-    order: 4 !important;
+    order: 3 !important;
     text-align: center !important;
   }
 

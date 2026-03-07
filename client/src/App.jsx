@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { API_BASE } from './api';
+import { useState, useEffect } from 'react';
+import { API_BASE, authHeaders, getToken } from './api';
 import SearchPanel from './components/SearchPanel';
 import LoadingState from './components/LoadingState';
 import MetricCards from './components/MetricCards';
 import VehicleList from './components/VehicleList';
 import InvestmentCalculator from './components/InvestmentCalculator';
 import MarketLeaders from './components/MarketLeaders';
+import LoginButton from './components/LoginButton';
+import DemoBadge from './components/DemoBadge';
 
 const MODES = [
   { key: 'search', label: 'Search Turo Market', desc: 'Look up a specific make & model' },
@@ -17,6 +19,17 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Check token on mount
+  useEffect(() => {
+    if (getToken()) {
+      fetch(`${API_BASE}/api/me`, { headers: authHeaders() })
+        .then(r => r.json())
+        .then(data => { if (data.authenticated) setUser(data.user); })
+        .catch(() => {});
+    }
+  }, []);
 
   const handleModeChange = (newMode) => {
     setMode(newMode);
@@ -33,7 +46,7 @@ export default function App() {
     try {
       const res = await fetch(`${API_BASE}/api/search`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ make, model, city }),
       });
 
@@ -77,15 +90,19 @@ export default function App() {
       {/* Main content */}
       <div className="app-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '60px 24px 80px', position: 'relative', zIndex: 2 }}>
         {/* Header */}
-        <header style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <header style={{ textAlign: 'center', marginBottom: '32px', position: 'relative' }}>
+          {/* Login button - top right */}
+          <div style={{ position: 'absolute', top: 0, right: 0 }}>
+            <LoginButton user={user} onAuthChange={setUser} />
+          </div>
+
           <div style={{ display: 'inline-block', position: 'relative' }}>
-            <div className="app-header-title" style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900, fontSize: 'clamp(32px, 6vw, 56px)', textTransform: 'uppercase', lineHeight: 1, display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '0.3em', alignItems: 'end' }}>
-              <span className="header-titsy" style={{ color: '#f0f0f0', textAlign: 'right' }}>Titsy</span>
-              <span className="header-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span className="header-dereks" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600, fontSize: '13px', letterSpacing: '8px', textTransform: 'uppercase', color: '#888', marginBottom: '4px' }}>Derek&apos;s</span>
+            <div className="app-header-title" style={{ fontFamily: 'Orbitron, sans-serif', fontWeight: 900, fontSize: 'clamp(32px, 6vw, 56px)', textTransform: 'uppercase', lineHeight: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span className="header-dereks" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600, fontSize: '13px', letterSpacing: '8px', textTransform: 'uppercase', color: '#888', marginBottom: '4px' }}>Derek&apos;s</span>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3em' }}>
                 <span className="header-turo" style={{ color: '#00ff6a', textShadow: '0 0 30px rgba(0,255,106,0.35), 0 0 60px rgba(0,255,106,0.15)' }}>TURO</span>
-              </span>
-              <span className="header-metrics" style={{ color: '#f0f0f0', textAlign: 'left' }}>Metrics</span>
+                <span className="header-metrics" style={{ color: '#f0f0f0' }}>Metrics</span>
+              </div>
             </div>
             <div className="app-subtitle" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '14px', fontWeight: 500, color: '#888', letterSpacing: '3px', textTransform: 'uppercase', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
               <span style={{ width: '40px', height: '1px', background: 'linear-gradient(90deg, transparent, #00cc55, transparent)' }} />
@@ -94,6 +111,9 @@ export default function App() {
             </div>
           </div>
         </header>
+
+        {/* Demo Badge */}
+        {!user && <DemoBadge />}
 
         {/* Mode Toggle */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '28px' }}>
@@ -158,7 +178,7 @@ export default function App() {
                     Data as of {new Date(results.lastUpdated).toLocaleString()}
                   </div>
                 )}
-                {results.dataSource === 'sample' && (
+                {results.dataSource === 'sample' && !results.isDemo && (
                   <div style={{ background: 'rgba(255,214,0,0.08)', border: '1px solid rgba(255,214,0,0.3)', borderRadius: '4px', padding: '12px 20px', marginBottom: '16px', textAlign: 'center' }}>
                     <div style={{ fontFamily: 'Rajdhani, sans-serif', color: '#ffd600', fontSize: '14px', fontWeight: 600 }}>
                       Showing sample data — live Turo scraping was unavailable. Estimates are based on typical NC market rates.
