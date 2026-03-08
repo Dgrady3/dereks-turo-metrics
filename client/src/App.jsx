@@ -10,8 +10,12 @@ import LoginButton from './components/LoginButton';
 import DemoBadge from './components/DemoBadge';
 
 const MODES = [
-  { key: 'search', label: 'Search Turo Market', desc: 'Look up a specific make & model' },
-  { key: 'leaders', label: 'Market Leaders', desc: 'Find the best opportunities by category' },
+  { key: 'search', label: 'Search Market', desc: 'Look up a specific make & model', icon: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  )},
+  { key: 'leaders', label: 'Market Leaders', desc: 'Find the best opportunities by category', icon: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 7 8 12 8s5-4 7.5-4a2.5 2.5 0 010 5H18"/><path d="M6 9l6 11 6-11"/></svg>
+  )},
 ];
 
 export default function App() {
@@ -90,9 +94,9 @@ export default function App() {
       {/* Main content */}
       <div className="app-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '60px 24px 80px', position: 'relative', zIndex: 2 }}>
         {/* Header */}
-        <header style={{ textAlign: 'center', marginBottom: '32px', position: 'relative' }}>
+        <header style={{ textAlign: 'center', marginBottom: '32px' }}>
           {/* Login button - top right */}
-          <div style={{ position: 'absolute', top: 0, right: 0 }}>
+          <div className="login-row" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
             <LoginButton user={user} onAuthChange={setUser} />
           </div>
 
@@ -115,46 +119,55 @@ export default function App() {
         {/* Demo Badge */}
         {!user && <DemoBadge />}
 
-        {/* Mode Toggle */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '28px' }}>
-          <div className="mode-toggle" style={{ display: 'inline-flex', background: '#0a0a0a', border: '1px solid #1e1e1e', borderRadius: '4px', overflow: 'hidden' }}>
-            {MODES.map(m => (
+        {/* Mode Toggle — Card style */}
+        <div className="mode-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', maxWidth: '520px', margin: '0 auto 28px' }}>
+          {MODES.map(m => {
+            const active = mode === m.key;
+            return (
               <button
                 key={m.key}
                 onClick={() => handleModeChange(m.key)}
+                className="mode-card"
                 style={{
                   fontFamily: 'Rajdhani, sans-serif',
-                  padding: '10px 24px',
-                  border: 'none',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase',
+                  padding: '16px 16px',
+                  border: active ? '1px solid #00ff6a' : '1px solid #1e1e1e',
+                  borderRadius: '6px',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
-                  whiteSpace: 'nowrap',
-                  background: mode === m.key ? '#00ff6a' : 'transparent',
-                  color: mode === m.key ? '#0a0a0a' : '#888',
-                  boxShadow: mode === m.key ? '0 0 20px rgba(0,255,106,0.15)' : 'none',
+                  background: active ? 'rgba(0,255,106,0.08)' : '#0e0e0e',
+                  color: active ? '#00ff6a' : '#888',
+                  boxShadow: active ? '0 0 20px rgba(0,255,106,0.1)' : 'none',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '2px',
+                  gap: '6px',
+                  textAlign: 'center',
                 }}
               >
-                <span>{m.label}</span>
+                <span style={{ opacity: active ? 1 : 0.5 }}>{m.icon}</span>
                 <span style={{
-                  fontSize: '10px',
+                  fontFamily: 'Orbitron, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                }}>
+                  {m.label}
+                </span>
+                <span style={{
+                  fontSize: '12px',
                   fontWeight: 500,
-                  letterSpacing: '0.5px',
                   textTransform: 'none',
-                  opacity: mode === m.key ? 0.7 : 0.5,
+                  opacity: active ? 0.7 : 0.4,
+                  lineHeight: 1.3,
+                  color: active ? '#ccc' : '#666',
                 }}>
                   {m.desc}
                 </span>
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         {/* === FLOW 1: Search Turo Market === */}

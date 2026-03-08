@@ -46,13 +46,11 @@ body::before {
     padding: 32px 12px 60px !important;
   }
 
-  /* Mode toggle - stack vertically */
+  /* Mode toggle cards - single column on mobile */
   .mode-toggle {
-    flex-direction: column !important;
-    width: 100% !important;
-  }
-  .mode-toggle button {
-    width: 100% !important;
+    grid-template-columns: 1fr !important;
+    max-width: 100% !important;
+    gap: 10px !important;
   }
 
   /* Search panel */
