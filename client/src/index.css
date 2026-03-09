@@ -46,11 +46,33 @@ body::before {
     padding: 32px 12px 60px !important;
   }
 
-  /* Mode toggle cards - single column on mobile */
+  /* Mode toggle — compact side-by-side pills on mobile */
   .mode-toggle {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr 1fr !important;
     max-width: 100% !important;
-    gap: 10px !important;
+    gap: 8px !important;
+    margin-bottom: 40px !important;
+  }
+  .mode-card {
+    padding: 10px 8px !important;
+    gap: 4px !important;
+  }
+  .mode-card .mode-desc {
+    display: none !important;
+  }
+  .mode-card .mode-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .mode-card .mode-label {
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+  }
+  .mode-select-label {
+    display: none !important;
+  }
+  .demo-badge {
+    margin-bottom: 12px !important;
   }
 
   /* Search panel */
@@ -136,6 +158,18 @@ body::before {
   }
   .calc-input-row {
     flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .calc-input-row > div {
+    width: 100% !important;
+    max-width: 300px !important;
+    flex: none !important;
+  }
+  .calc-input-row button {
+    width: 100% !important;
+    max-width: 300px !important;
+    justify-content: center !important;
   }
   .calc-metrics {
     grid-template-columns: 1fr 1fr !important;

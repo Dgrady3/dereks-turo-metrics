@@ -120,7 +120,7 @@ export default function App() {
         {!user && <DemoBadge />}
 
         {/* Mode Toggle — Card style */}
-        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '15px', fontWeight: 600, color: '#666', letterSpacing: '3px', textTransform: 'uppercase', textAlign: 'center', marginBottom: '12px' }}>Select a mode</div>
+        <div className="mode-select-label" style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '15px', fontWeight: 600, color: '#666', letterSpacing: '3px', textTransform: 'uppercase', textAlign: 'center', marginBottom: '12px' }}>Choose your view</div>
         <div className="mode-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', maxWidth: '520px', margin: '0 auto 40px' }}>
           {MODES.map(m => {
             const active = mode === m.key;
@@ -148,8 +148,8 @@ export default function App() {
                   textAlign: 'center',
                 }}
               >
-                <span style={{ opacity: active ? 1 : 0.5 }}>{m.icon}</span>
-                <span style={{
+                <span className="mode-icon" style={{ opacity: active ? 1 : 0.5 }}>{m.icon}</span>
+                <span className="mode-label" style={{
                   fontFamily: 'Orbitron, sans-serif',
                   fontSize: '12px',
                   fontWeight: 700,
@@ -158,7 +158,7 @@ export default function App() {
                 }}>
                   {m.label}
                 </span>
-                <span style={{
+                <span className="mode-desc" style={{
                   fontSize: '12px',
                   fontWeight: 500,
                   textTransform: 'none',

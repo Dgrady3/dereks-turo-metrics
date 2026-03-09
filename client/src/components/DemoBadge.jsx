@@ -1,6 +1,6 @@
 export default function DemoBadge() {
   return (
-    <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+    <div className="demo-badge" style={{ textAlign: 'center', marginBottom: '8px' }}>
       <span style={{
         fontFamily: 'Rajdhani, sans-serif',
         fontSize: '11px',
