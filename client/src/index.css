@@ -166,23 +166,9 @@ body::before {
   }
 
 
-  /* Header mobile: Derek's / TURO Metrics stacked */
+  /* Header mobile — already stacked via inline flex-direction: column */
   .app-header-title {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0 !important;
-  }
-  .header-dereks {
-    order: 1 !important;
-    margin-bottom: 4px !important;
-  }
-  .header-turo {
-    order: 2 !important;
-  }
-  .header-metrics {
-    order: 3 !important;
-    text-align: center !important;
+    font-size: clamp(28px, 8vw, 42px) !important;
   }
 
   /* Background gears - smaller on mobile */

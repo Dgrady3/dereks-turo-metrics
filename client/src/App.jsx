@@ -14,7 +14,7 @@ const MODES = [
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
   )},
   { key: 'leaders', label: 'Market Leaders', desc: 'Find the best opportunities by category', icon: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 7 8 12 8s5-4 7.5-4a2.5 2.5 0 010 5H18"/><path d="M6 9l6 11 6-11"/></svg>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 01-2.5-2.5v0A2.5 2.5 0 014.5 4H6"/><path d="M18 9h1.5A2.5 2.5 0 0022 6.5v0A2.5 2.5 0 0019.5 4H18"/><path d="M6 4h12v5a6 6 0 01-12 0V4z"/><path d="M12 15v3"/><path d="M8 21h8"/><path d="M8 21v-3h8v3"/></svg>
   )},
 ];
 
@@ -94,7 +94,7 @@ export default function App() {
       {/* Main content */}
       <div className="app-content" style={{ maxWidth: '1100px', margin: '0 auto', padding: '60px 24px 80px', position: 'relative', zIndex: 2 }}>
         {/* Header */}
-        <header style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <header style={{ textAlign: 'center', marginBottom: '40px' }}>
           {/* Login button - top right */}
           <div className="login-row" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
             <LoginButton user={user} onAuthChange={setUser} />
@@ -120,7 +120,8 @@ export default function App() {
         {!user && <DemoBadge />}
 
         {/* Mode Toggle — Card style */}
-        <div className="mode-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', maxWidth: '520px', margin: '0 auto 28px' }}>
+        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '15px', fontWeight: 600, color: '#666', letterSpacing: '3px', textTransform: 'uppercase', textAlign: 'center', marginBottom: '12px' }}>Select a mode</div>
+        <div className="mode-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', maxWidth: '520px', margin: '0 auto 40px' }}>
           {MODES.map(m => {
             const active = mode === m.key;
             return (
@@ -128,10 +129,12 @@ export default function App() {
                 key={m.key}
                 onClick={() => handleModeChange(m.key)}
                 className="mode-card"
+                onMouseEnter={(e) => { if (!active) { e.currentTarget.style.borderColor = '#00ff6a80'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = '#141414'; }}}
+                onMouseLeave={(e) => { if (!active) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = '#0e0e0e'; }}}
                 style={{
                   fontFamily: 'Rajdhani, sans-serif',
                   padding: '16px 16px',
-                  border: active ? '1px solid #00ff6a' : '1px solid #1e1e1e',
+                  border: active ? '1px solid #00ff6a' : '1px dashed #333',
                   borderRadius: '6px',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
